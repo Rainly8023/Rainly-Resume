@@ -3,10 +3,10 @@ import * as THREE from 'three';
 import { scene } from './scene.js';
 
 const RING_CONFIG = [
-  { key: 'core', radius: 1.6, opacity: 0.15, color: '#5aae98', yOffset: 0 },
-  { key: 'close', radius: 3.2, opacity: 0.10, color: '#6b8cff', yOffset: -0.1 },
-  { key: 'acquaintance', radius: 5.4, opacity: 0.07, color: '#ffd93d', yOffset: -0.2 },
-  { key: 'outer', radius: 7.8, opacity: 0.04, color: '#ffffff', yOffset: -0.3 },
+  { key: 'core', radius: 1.6, opacity: 0.22, color: '#4a9d8a', yOffset: 0 },
+  { key: 'close', radius: 3.2, opacity: 0.16, color: '#5b7fd4', yOffset: -0.1 },
+  { key: 'acquaintance', radius: 5.4, opacity: 0.12, color: '#c9a830', yOffset: -0.2 },
+  { key: 'outer', radius: 7.8, opacity: 0.08, color: '#555555', yOffset: -0.3 },
 ];
 
 const ringObjects = [];

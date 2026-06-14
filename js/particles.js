@@ -1,4 +1,4 @@
-// js/particles.js — 星空粒子背景
+// js/particles.js — 星空粒子背景 (浅色主题适配)
 import * as THREE from 'three';
 import { scene } from './scene.js';
 
@@ -22,17 +22,20 @@ export function initParticles() {
 
     const colorChoice = Math.random();
     if (colorChoice < 0.7) {
-      colors[i * 3] = 0.6 + Math.random() * 0.4;
-      colors[i * 3 + 1] = 0.65 + Math.random() * 0.35;
-      colors[i * 3 + 2] = 0.8 + Math.random() * 0.2;
+      // 柔和灰蓝系
+      colors[i * 3] = 0.25 + Math.random() * 0.15;
+      colors[i * 3 + 1] = 0.28 + Math.random() * 0.15;
+      colors[i * 3 + 2] = 0.35 + Math.random() * 0.15;
     } else if (colorChoice < 0.85) {
-      colors[i * 3] = 0.5 + Math.random() * 0.5;
-      colors[i * 3 + 1] = 0.55 + Math.random() * 0.45;
-      colors[i * 3 + 2] = 0.4 + Math.random() * 0.3;
+      // 暖灰褐系
+      colors[i * 3] = 0.30 + Math.random() * 0.15;
+      colors[i * 3 + 1] = 0.25 + Math.random() * 0.12;
+      colors[i * 3 + 2] = 0.20 + Math.random() * 0.10;
     } else {
-      colors[i * 3] = 0.3 + Math.random() * 0.3;
-      colors[i * 3 + 1] = 0.5 + Math.random() * 0.5;
-      colors[i * 3 + 2] = 0.6 + Math.random() * 0.4;
+      // 青绿点缀
+      colors[i * 3] = 0.12 + Math.random() * 0.10;
+      colors[i * 3 + 1] = 0.28 + Math.random() * 0.15;
+      colors[i * 3 + 2] = 0.25 + Math.random() * 0.12;
     }
 
     sizes[i] = Math.random() * 2.5 + 0.5;
@@ -46,8 +49,8 @@ export function initParticles() {
     size: 0.04,
     vertexColors: true,
     transparent: true,
-    opacity: 0.7,
-    blending: THREE.AdditiveBlending,
+    opacity: 0.55,
+    blending: THREE.NormalBlending,
     depthWrite: false,
     sizeAttenuation: true,
   });

@@ -39,7 +39,7 @@ function createConnectionLine(personA, personB) {
   const points = [meshA.position.clone(), meshB.position.clone()];
   const geom = new THREE.BufferGeometry().setFromPoints(points);
   const mat = new THREE.LineBasicMaterial({
-    color: '#ffffff',
+    color: '#444444',
     transparent: true,
     opacity,
     depthWrite: false,
@@ -81,14 +81,14 @@ export function highlightConnections(personId, on = true) {
 
     if (on && isRelated) {
       line.material.opacity = 0.8;
-      line.material.color.set('#5aae98');
+      line.material.color.set('#4a9d8a');
     } else if (!on) {
       const sameRing = line.userData.sameRing;
       line.material.opacity = sameRing ? 0.35 : 0.12;
-      line.material.color.set('#ffffff');
+      line.material.color.set('#444444');
     } else {
       line.material.opacity = 0.03;
-      line.material.color.set('#ffffff');
+      line.material.color.set('#444444');
     }
   });
 }
