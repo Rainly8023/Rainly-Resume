@@ -1,0 +1,13 @@
+.DS_Store
+.claude/
+*.log
+node_modules/
+.next/
+.env
+.env.local
+*.db
+*.db-shm
+*.db-wal
+venv/
+__pycache__/
+*.pyc

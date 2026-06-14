@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="雨屿 · 社交星系">
+  <title>雨屿 · 社交星系</title>
+  <meta name="theme-color" content="#f5f3ef">
+  <link rel="icon" href="favicon/1.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&family=Noto+Serif+SC:wght@200;300;400&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/social-graph.css">
+</head>
+<body>
+
+  <canvas id="gl"></canvas>
+  <canvas id="ripple-canvas"></canvas>
+
+  <nav class="nav">
+    <a href="/" class="nav-brand">RAINLY</a>
+    <div class="nav-links">
+      <a href="/" class="nav-link is-active">社交星系</a>
+      <a href="/travel" class="nav-link">旅行</a>
+    </div>
+    <div class="nav-actions">
+      <button class="nav-btn" id="btnExport">导出 JSON</button>
+      <button class="nav-btn" id="btnImport">导入 JSON</button>
+      <button class="nav-btn" id="btnTogglePanel">面板</button>
+    </div>
+  </nav>
+
+  <aside class="panel" id="panel">
+    <div class="panel-header">
+      <span class="panel-title">人物管理</span>
+      <button class="panel-toggle" id="btnPanelClose">×</button>
+    </div>
+    <div class="panel-search">
+      <input type="text" class="panel-search-input" id="searchInput" placeholder="搜索姓名或标签...">
+    </div>
+    <div class="panel-filters" id="filterBar">
+      <button class="panel-filter is-active" data-ring="all">全部</button>
+      <button class="panel-filter" data-ring="core">核心圈</button>
+      <button class="panel-filter" data-ring="close">好友圈</button>
+      <button class="panel-filter" data-ring="acquaintance">熟人圈</button>
+      <button class="panel-filter" data-ring="outer">泛泛之交</button>
+    </div>
+    <div class="panel-list" id="personList"></div>
+    <div class="panel-add" id="btnAddPerson">＋ 添加新人物</div>
+
+    <div class="edit-card hidden" id="editCard">
+      <div class="edit-back-btn" id="btnBackToList">← 返回列表</div>
+      <div class="edit-header">
+        <div class="edit-header-dot" id="editDot"></div>
+        <div>
+          <input class="edit-name" id="editName" value="" placeholder="姓名">
+          <div class="edit-ring-label" id="editRingLabel"></div>
+        </div>
+      </div>
+      <div>
+        <div class="edit-field-label">标签</div>
+        <div class="edit-tags-row" id="editTags"></div>
+        <input type="text" class="panel-search-input" id="editTagInput" placeholder="输入标签名回车添加..." style="margin-top:6px">
+      </div>
+      <div>
+        <div class="edit-field-label">圈子</div>
+        <div class="edit-ring-btns" id="editRingBtns"></div>
+      </div>
+      <div>
+        <div class="edit-field-label">节点颜色</div>
+        <div class="edit-color-row" id="editColors"></div>
+      </div>
+      <div>
+        <div class="edit-field-label">关系人</div>
+        <div class="edit-connections" id="editConnections"></div>
+      </div>
+      <div>
+        <div class="edit-field-label">备注</div>
+        <textarea class="edit-note" id="editNote" placeholder="写一段备注..."></textarea>
+      </div>
+      <button class="edit-delete-btn" id="btnDeletePerson">删除此人</button>
+    </div>
+  </aside>
+
+  <div class="node-tooltip" id="tooltip"></div>
+  <div class="toast" id="toast"></div>
+  <input type="file" id="fileImport" accept=".json" style="display:none">
+
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+      "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+    }
+  }
+  </script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script type="module" src="/js/main.js"></script>
+</body>
+</html>
