@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>美少女画廊 · Rainly</title>
+  <meta name="theme-color" content="#fce4ec">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌸</text></svg>">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500&family=Noto+Serif+SC:wght@200;300;400&family=Klee+One&family=ZCOOL+KuaiLe&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/kawaii.css">
+</head>
+<body>
+
+  <canvas id="bg-canvas"></canvas>
+
+  <nav class="kawaii-nav">
+    <a href="/" class="nav-brand">🌸 Rainly</a>
+    <div class="nav-links">
+      <a href="/">首页</a>
+      <a href="/gallery" class="active">画廊</a>
+      <a href="/blog">博客</a>
+      <a href="/about">关于</a>
+    </div>
+  </nav>
+
+  <div id="gallery-container"></div>
+
+  <div class="gallery-info">🖱 拖拽旋转 · 滚轮缩放 · 点击查看 · Esc 关闭</div>
+
+  <div class="gallery-detail" id="gallery-detail">
+    <img src="" alt="">
+    <h3></h3>
+    <p></p>
+    <button class="kawaii-btn" onclick="document.dispatchEvent(new KeyboardEvent('keydown',{key:'Escape'}))" style="margin-top:16px">✕ 关闭</button>
+  </div>
+
+  <script type="importmap">
+  { "imports": { "three": "https://unpkg.com/three@0.160.0/build/three.module.js" } }
+  </script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"
+    integrity="sha384-g4NTh/Iv5PPU4xPyhEWqPcwtNXOvdaDI8LLnyYfyNZOjKJeYQyjzQ9X5275eBjpt"
+    crossorigin="anonymous"></script>
+
+  <script type="module">
+    import { startPetals } from './js/sakura-petals.js';
+    import { startClickHearts } from './js/click-heart.js';
+    import { initGallery } from './js/gallery-3d.js';
+
+    const cleanupFns = [];
+    cleanupFns.push(startPetals('bg-canvas'));
+
+    const heartCanvas = document.createElement('canvas');
+    heartCanvas.id = 'heart-canvas';
+    Object.assign(heartCanvas.style, {
+      position: 'fixed', top: '0', left: '0',
+      width: '100%', height: '100%',
+      zIndex: '3', pointerEvents: 'none'
+    });
+    document.body.appendChild(heartCanvas);
+    cleanupFns.push(startClickHearts('heart-canvas'));
+
+    // Load gallery data
+    fetch('/content/gallery.json')
+      .then(r => r.json())
+      .then(photos => {
+        cleanupFns.push(initGallery('gallery-container', photos));
+      })
+      .catch(() => {
+        // Fallback demo data
+        cleanupFns.push(initGallery('gallery-container', [
+          { id:'1', title:'桜と共に', image:'https://images.unsplash.com/photo-1523712999610-f77fbcfc3843?w=400&q=80', description:'春风拂过，花瓣落在肩头。', color:'#fce4ec' },
+          { id:'2', title:'星の記憶', image:'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=400&q=80', description:'夜空中的星光，像是过去的记忆。', color:'#e8eaf6' },
+          { id:'3', title:'夢の彼方', image:'https://images.unsplash.com/photo-1465146344425-f00d5f5c8f07?w=400&q=80', description:'在梦的彼岸，有无限的可能。', color:'#f3e5f5' },
+          { id:'4', title:'虹色の街', image:'https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=400&q=80', description:'雨后的城市，彩虹横跨天际。', color:'#e0f7fa' },
+          { id:'5', title:'月の光', image:'https://images.unsplash.com/photo-1505144808419-1957a94ca61e?w=400&q=80', description:'月光洒落，温柔了整个世界。', color:'#fff9c4' },
+          { id:'6', title:'花の約束', image:'https://images.unsplash.com/photo-1490750967868-88aa4b3b2b2a?w=400&q=80', description:'花开的季节，想起我们的约定。', color:'#fce4ec' },
+        ]));
+      });
+  </script>
+</body>
+</html>
