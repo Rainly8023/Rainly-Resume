@@ -1,12 +1,13 @@
 // js/gallery-3d.js — Three.js 3D 拍立得旋转木马
 
+/* global gsap */
 import * as THREE from 'three';
 
 export function initGallery(containerId, photos) {
   const container = document.getElementById(containerId);
   if (!container || photos.length === 0) return;
 
-  let cleanupFns = [];
+  const disposables = { geometries: [], materials: [], textures: [] };
 
   const w = window.innerWidth, h = window.innerHeight;
   const isMobile = w < 768;
@@ -54,6 +55,8 @@ export function initGallery(containerId, photos) {
   }
   starsGeo.setAttribute('position', new THREE.BufferAttribute(starsPositions, 3));
   const starsMat = new THREE.PointsMaterial({ color: 0xf8bbd0, size: 0.08, transparent: true, opacity: 0.6 });
+  disposables.geometries.push(starsGeo);
+  disposables.materials.push(starsMat);
   const stars = new THREE.Points(starsGeo, starsMat);
   scene.add(stars);
 
@@ -91,9 +94,13 @@ export function initGallery(containerId, photos) {
     photoMesh.position.z = 0.01;
     cardGroup.add(photoMesh);
 
+    disposables.geometries.push(whiteGeo, photoGeo);
+    disposables.materials.push(whiteMat, photoMat);
+
     // Load real photo texture
     if (photo.image) {
       textureLoader.load(photo.image, tex => {
+        disposables.textures.push(tex);
         photoMat.map = tex;
         photoMat.color.set(0xffffff);
         photoMat.needsUpdate = true;
@@ -113,6 +120,7 @@ export function initGallery(containerId, photos) {
 
   // Interaction state
   let isDragging = false, prevX = 0, prevY = 0;
+  let dragDistance = 0, startX = 0, startY = 0;
   let rotationY = 0, rotationX = 0;
   let targetRotationY = 0, targetRotationX = 0;
   let autoRotate = true;
@@ -121,6 +129,9 @@ export function initGallery(containerId, photos) {
 
   function onPointerDown(e) {
     isDragging = true;
+    dragDistance = 0;
+    startX = e.clientX;
+    startY = e.clientY;
     prevX = e.clientX;
     prevY = e.clientY;
     autoRotate = false;
@@ -134,6 +145,7 @@ export function initGallery(containerId, photos) {
   }
 
   function onPointerMove(e) {
+    dragDistance = Math.hypot(e.clientX - startX, e.clientY - startY);
     if (!isDragging) return;
     const dx = e.clientX - prevX, dy = e.clientY - prevY;
     targetRotationY += dx * 0.005;
@@ -158,7 +170,6 @@ export function initGallery(containerId, photos) {
 
   const raycaster = new THREE.Raycaster();
   const mouse = new THREE.Vector2();
-  let lastHoveredCard = null;
 
   function onResize() {
     const nw = window.innerWidth, nh = window.innerHeight;
@@ -177,7 +188,7 @@ export function initGallery(containerId, photos) {
   window.addEventListener('mousemove', onMouseMove);
 
   function onClick(e) {
-    if (isDragging) return;
+    if (isDragging || dragDistance > 5) return;
     raycaster.setFromCamera(mouse, camera);
     const intersects = raycaster.intersectObjects(cards, true);
 
@@ -291,6 +302,9 @@ export function initGallery(containerId, photos) {
     window.removeEventListener('mousemove', onMouseMove);
     renderer.domElement.removeEventListener('click', onClick);
     window.removeEventListener('keydown', onKeyDown);
+    disposables.geometries.forEach(g => g.dispose());
+    disposables.materials.forEach(m => m.dispose());
+    disposables.textures.forEach(t => t.dispose());
     renderer.dispose();
     if (container.contains(renderer.domElement)) {
       container.removeChild(renderer.domElement);
