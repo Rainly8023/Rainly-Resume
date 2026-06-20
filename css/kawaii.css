@@ -27,6 +27,8 @@
   --sakura-pink-15: rgba(248,187,208,0.15);
   --sakura-pink-20: rgba(248,187,208,0.20);
   --sakura-pink-25: rgba(248,187,208,0.25);
+  --sakura-pink-30: rgba(248,187,208,0.30);
+  --sakura-pink-35: rgba(248,187,208,0.35);
   --sakura-pink-40: rgba(248,187,208,0.40);
   --lavender-dark: #5c4d80;
   --lavender-text: #7c6ba0;
@@ -98,7 +100,7 @@ body {
 .kawaii-btn:hover {
   background: var(--sakura-pink); color: #d81b60;
   transform: translateY(-3px) scale(1.03);
-  box-shadow: 0 8px 28px rgba(248,187,208,0.35);
+  box-shadow: 0 8px 28px var(--sakura-pink-35);
 }
 .kawaii-btn.purple { border-color: var(--lavender); color: var(--lavender-text); }
 .kawaii-btn.purple:hover { background: var(--lavender); color: var(--lavender-dark); }
@@ -185,7 +187,7 @@ body {
   font-family: var(--font-hand); font-size: clamp(48px, 10vw, 96px);
   color: var(--sakura-pink); letter-spacing: 6px;
   animation: breathe 3s ease-in-out infinite;
-  text-shadow: 0 0 40px rgba(248,187,208,0.3);
+  text-shadow: 0 0 40px var(--sakura-pink-30);
 }
 @keyframes breathe {
   0%, 100% { opacity: 1; transform: scale(1); }
