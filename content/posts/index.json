@@ -1,0 +1,34 @@
+[
+  {
+    "slug": "hello-world",
+    "title": "はじめまして · 初次见面",
+    "date": "2026-06-20",
+    "image": "https://images.unsplash.com/photo-1523712999610-f77fbcfc3843?w=600&q=80",
+    "tags": ["日記", "自己紹介"],
+    "summary": "欢迎来到我的小站！这里会记录我喜欢的照片、旅行的记忆和日常的碎碎念。"
+  },
+  {
+    "slug": "sakura-diary",
+    "title": "桜の日記 · 樱花日记",
+    "date": "2026-03-15",
+    "image": "https://images.unsplash.com/photo-1490750967868-88aa4b3b2b2a?w=600&q=80",
+    "tags": ["桜", "春", "日記"],
+    "summary": "春天来了，樱花开了。走在铺满花瓣的小路上，整个世界都是粉色的。"
+  },
+  {
+    "slug": "summer-fireworks",
+    "title": "夏の花火 · 夏日烟火",
+    "date": "2026-07-28",
+    "image": "https://images.unsplash.com/photo-1465146344425-f00d5f5c8f07?w=600&q=80",
+    "tags": ["夏", "花火", "旅行"],
+    "summary": "穿上浴衣，去看了一场花火大会。夜空中绽放的烟花，转瞬即逝却美得让人想哭。"
+  },
+  {
+    "slug": "autumn-cafe",
+    "title": "秋の喫茶店 · 秋日咖啡",
+    "date": "2025-10-10",
+    "image": "https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?w=600&q=80",
+    "tags": ["秋", "日常", "美食"],
+    "summary": "在街角发现了一家超可爱的猫咪咖啡馆。栗子蒙布朗和抹茶拿铁，秋天的完美组合。"
+  }
+]
