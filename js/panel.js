@@ -2,9 +2,8 @@
 import {
   getPeople, getPerson, addPerson, updatePerson, deletePerson,
   getSettings, updateSettings, exportJSON, importJSON, showToast,
-  RING_NAMES, RING_ORDER, subscribe,
+  linkPeople, unlinkPeople, RING_NAMES, RING_ORDER, subscribe,
 } from './data.js';
-import { rebuildAllConnections } from './connections.js';
 
 let selectedPersonId = null;
 let currentFilter = 'all';
@@ -106,7 +105,6 @@ export function initPanel() {
       selectedPersonId = null;
       renderList();
       renderEditCard();
-      rebuildAllConnections();
       showToast(`已删除「${name}」`);
     }
   });
@@ -128,7 +126,6 @@ export function initPanel() {
         selectedPersonId = null;
         renderList();
         renderEditCard();
-        rebuildAllConnections();
       } else {
         showToast('导入失败：文件格式不正确');
       }
@@ -228,7 +225,6 @@ function renderEditCard() {
   editRingBtns.querySelectorAll('.edit-ring-btn').forEach(btn => {
     btn.addEventListener('click', () => {
       updatePerson(selectedPersonId, { ring: btn.dataset.ring });
-      rebuildAllConnections();
     });
   });
 
@@ -272,12 +268,44 @@ function renderEditCard() {
 
   editConnections.querySelectorAll('.edit-conn-remove').forEach(btn => {
     btn.addEventListener('click', () => {
-      updatePerson(selectedPersonId, {
-        connections: person.connections.filter(cid => cid !== btn.dataset.id),
-      });
-      rebuildAllConnections();
+      unlinkPeople(selectedPersonId, btn.dataset.id);
+      renderEditCard();
     });
   });
+
+  const addConnectionBtn = editConnections.querySelector('.edit-conn-add');
+  if (addConnectionBtn) {
+    addConnectionBtn.addEventListener('click', () => {
+      const keyword = prompt('输入要关联的人物姓名或ID');
+      if (!keyword) return;
+
+      const query = keyword.trim().toLowerCase();
+      if (!query) return;
+
+      const candidates = getPeople().filter(p =>
+        p.id !== selectedPersonId && !person.connections.includes(p.id)
+      );
+
+      const exactMatch = candidates.find(p =>
+        p.id.toLowerCase() === query || p.name.toLowerCase() === query
+      );
+      const partialMatch = candidates.find(p => p.name.toLowerCase().includes(query));
+      const target = exactMatch || partialMatch;
+
+      if (!target) {
+        showToast('没有找到可关联的人物');
+        return;
+      }
+
+      const ok = linkPeople(selectedPersonId, target.id);
+      if (ok) {
+        showToast(`已关联「${target.name}」`);
+        renderEditCard();
+      } else {
+        showToast('关联失败');
+      }
+    });
+  }
 
   // 只在用户没有正在编辑时更新备注框，避免光标跳到最后
   if (document.activeElement !== editNote) {

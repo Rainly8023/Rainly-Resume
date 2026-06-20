@@ -1,0 +1,14 @@
+{
+  "name": "rainly-website",
+  "version": "1.0.0",
+  "private": true,
+  "description": "雨屿 · 社交星系 — Rainly personal website",
+  "scripts": {
+    "tina": "tinacms dev -c 'echo done'",
+    "tina:build": "tinacms build"
+  },
+  "dependencies": {
+    "tinacms": "^2.0.0",
+    "@tinacms/cli": "^2.0.0"
+  }
+}
