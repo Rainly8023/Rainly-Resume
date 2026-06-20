@@ -11,4 +11,8 @@ export function initScrollReveal() {
   }, { threshold: 0.15, rootMargin: '0px 0px -40px 0px' });
 
   document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+  return () => {
+    observer.disconnect();
+  };
 }

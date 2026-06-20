@@ -21,17 +21,24 @@ export function startMouseTrail(canvasId) {
   resize();
   window.addEventListener('resize', resize);
 
-  document.addEventListener('mousemove', e => { mouseX = e.clientX; mouseY = e.clientY; });
-  document.addEventListener('mouseleave', () => { mouseX = -100; mouseY = -100; });
-  document.addEventListener('touchmove', e => {
-    mouseX = e.touches[0].clientX; mouseY = e.touches[0].clientY;
-  }, { passive: true });
-  document.addEventListener('touchend', () => { mouseX = -100; mouseY = -100; });
+  function onMouseMove(e) { mouseX = e.clientX; mouseY = e.clientY; }
+  function onMouseLeave() { mouseX = -100; mouseY = -100; }
+  function onTouchMove(e) { mouseX = e.touches[0].clientX; mouseY = e.touches[0].clientY; }
+  function onTouchEnd() { mouseX = -100; mouseY = -100; }
+
+  document.addEventListener('mousemove', onMouseMove);
+  document.addEventListener('mouseleave', onMouseLeave);
+  document.addEventListener('touchmove', onTouchMove, { passive: true });
+  document.addEventListener('touchend', onTouchEnd);
 
   const colors = ['#f8bbd0','#c5cae9','#fff9c4','#b2ebf2','#f48fb1','#ce93d8'];
   let lastEmit = 0;
+  let lastTime = performance.now();
+  let animationId;
 
   function draw(timestamp) {
+    const dt = Math.min((timestamp - lastTime) / 16, 3);
+    lastTime = timestamp;
     ctx.clearRect(0, 0, w, h);
 
     if (mouseX > 0 && mouseY > 0 && timestamp - lastEmit > 25 && trails.length < maxTrails && !isMobile) {
@@ -47,7 +54,7 @@ export function startMouseTrail(canvasId) {
 
     for (let i = trails.length - 1; i >= 0; i--) {
       const t = trails[i];
-      t.x += t.vx; t.y += t.vy;
+      t.x += t.vx * dt; t.y += t.vy * dt;
       t.life -= t.decay;
       if (t.life <= 0) { trails.splice(i, 1); continue; }
       ctx.beginPath();
@@ -56,7 +63,16 @@ export function startMouseTrail(canvasId) {
       ctx.fillStyle = t.color + alpha;
       ctx.fill();
     }
-    requestAnimationFrame(draw);
+    animationId = requestAnimationFrame(draw);
   }
-  requestAnimationFrame(draw);
+  animationId = requestAnimationFrame(draw);
+
+  return () => {
+    cancelAnimationFrame(animationId);
+    window.removeEventListener('resize', resize);
+    document.removeEventListener('mousemove', onMouseMove);
+    document.removeEventListener('mouseleave', onMouseLeave);
+    document.removeEventListener('touchmove', onTouchMove);
+    document.removeEventListener('touchend', onTouchEnd);
+  };
 }

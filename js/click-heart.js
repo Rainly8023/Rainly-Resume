@@ -8,6 +8,7 @@ export function startClickHearts(canvasId) {
   let w, h;
   const dpr = Math.min(window.devicePixelRatio || 1, 2);
   const particles = [];
+  const MAX_PARTICLES = 200;
 
   function resize() {
     w = window.innerWidth; h = window.innerHeight;
@@ -41,6 +42,7 @@ export function startClickHearts(canvasId) {
   }
 
   function burst(x, y) {
+    if (particles.length >= MAX_PARTICLES) return;
     const count = 12;
     const isHeart = Math.random() < 0.6;
     for (let i = 0; i < count; i++) {
@@ -56,17 +58,23 @@ export function startClickHearts(canvasId) {
     }
   }
 
-  document.addEventListener('click', e => {
+  function onClick(e) {
     if (e.target.closest('a, button, .photo-card, .blog-card, .gallery-detail, .kawaii-btn')) return;
     burst(e.clientX, e.clientY);
-  });
+  }
+  document.addEventListener('click', onClick);
+
+  let lastTime = performance.now();
+  let animationId;
 
   function draw(timestamp) {
+    const dt = Math.min((timestamp - lastTime) / 16, 3);
+    lastTime = timestamp;
     ctx.clearRect(0, 0, w, h);
     for (let i = particles.length - 1; i >= 0; i--) {
       const p = particles[i];
-      p.x += p.vx; p.y += p.vy; p.vy += 0.04;
-      p.life -= p.decay; p.rotation += 0.05;
+      p.x += p.vx * dt; p.y += p.vy * dt; p.vy += 0.04 * dt;
+      p.life -= p.decay; p.rotation += 0.05 * dt;
       if (p.life <= 0) { particles.splice(i, 1); continue; }
 
       ctx.save();
@@ -79,7 +87,13 @@ export function startClickHearts(canvasId) {
       ctx.fill();
       ctx.restore();
     }
-    requestAnimationFrame(draw);
+    animationId = requestAnimationFrame(draw);
   }
-  requestAnimationFrame(draw);
+  animationId = requestAnimationFrame(draw);
+
+  return () => {
+    cancelAnimationFrame(animationId);
+    window.removeEventListener('resize', resize);
+    document.removeEventListener('click', onClick);
+  };
 }

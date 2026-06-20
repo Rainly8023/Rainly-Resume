@@ -16,6 +16,7 @@ export function startPetals(canvasId) {
     canvas.width = w * dpr; canvas.height = h * dpr;
     canvas.style.width = w + 'px'; canvas.style.height = h + 'px';
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    stars = Array.from({length: starCount}, () => createStar());
   }
   resize();
   window.addEventListener('resize', resize);
@@ -59,6 +60,7 @@ export function startPetals(canvasId) {
   for (let i = 0; i < starCount; i++) stars.push(createStar());
 
   let lastTime = performance.now();
+  let animationId;
 
   function draw(timestamp) {
     const dt = Math.min((timestamp - lastTime) / 16, 3);
@@ -100,7 +102,12 @@ export function startPetals(canvasId) {
       ctx.restore();
     });
 
-    requestAnimationFrame(draw);
+    animationId = requestAnimationFrame(draw);
   }
-  requestAnimationFrame(draw);
+  animationId = requestAnimationFrame(draw);
+
+  return () => {
+    cancelAnimationFrame(animationId);
+    window.removeEventListener('resize', resize);
+  };
 }
