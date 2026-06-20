@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>博客 · Rainly</title>
+  <meta name="theme-color" content="#fce4ec">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌸</text></svg>">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500&family=Noto+Serif+SC:wght@200;300;400&family=Klee+One&family=ZCOOL+KuaiLe&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/kawaii.css">
+</head>
+<body>
+
+  <canvas id="bg-canvas"></canvas>
+
+  <nav class="kawaii-nav">
+    <a href="/" class="nav-brand">🌸 Rainly</a>
+    <div class="nav-links">
+      <a href="/">首页</a>
+      <a href="/gallery">画廊</a>
+      <a href="/blog" class="active">博客</a>
+      <a href="/about">关于</a>
+    </div>
+  </nav>
+
+  <div id="blog-content"></div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/12.0.0/marked.min.js"
+    integrity="sha384-6ZIOBtf1R3Sg1LVsZLvh2Yzk7KLT7KLsU1DkXh2JhH8N5fN9xJ2Tn5Lp3B6f2LXp"
+    crossorigin="anonymous"></script>
+
+  <script type="module">
+    import { startPetals } from './js/sakura-petals.js';
+    import { startClickHearts } from './js/click-heart.js';
+    import { loadPosts, renderBlogList, renderBlogDetail } from './js/blog-render.js';
+
+    const cleanupFns = [];
+    cleanupFns.push(startPetals('bg-canvas'));
+
+    const heartCanvas = document.createElement('canvas');
+    heartCanvas.id = 'heart-canvas';
+    Object.assign(heartCanvas.style, {
+      position: 'fixed', top: '0', left: '0',
+      width: '100%', height: '100%',
+      zIndex: '3', pointerEvents: 'none'
+    });
+    document.body.appendChild(heartCanvas);
+    cleanupFns.push(startClickHearts('heart-canvas'));
+
+    function route() {
+      const hash = window.location.hash;
+      const match = hash.match(/^#\/post\/(.+)$/);
+      if (match) {
+        renderBlogDetail('blog-content', match[1]);
+      } else {
+        renderBlogList('blog-content');
+      }
+    }
+
+    await loadPosts();
+    route();
+    window.addEventListener('hashchange', route);
+  </script>
+</body>
+</html>
