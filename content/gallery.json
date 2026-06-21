@@ -41,10 +41,26 @@
   },
   {
     "id": "6",
-    "title": "花の約束",
-    "image": "https://images.unsplash.com/photo-1490750967868-88aa4b3b2b2a?w=400&q=80",
-    "description": "花开的季节，想起我们的约定。",
+    "title": "新たな出会い",
+    "image": "/images/gallery/IMG_0021.jpg",
+    "description": "每一次相遇，都是命运的馈赠。",
     "color": "#fce4ec",
+    "tags": ["出会い", "桜"]
+  },
+  {
+    "id": "7",
+    "title": "星空の下で",
+    "image": "/images/gallery/IMG_0022.jpg",
+    "description": "在星空下，许下我们的愿望。",
+    "color": "#e8eaf6",
+    "tags": ["星", "願い"]
+  },
+  {
+    "id": "8",
+    "title": "花の約束",
+    "image": "/images/gallery/IMG_0023.jpg",
+    "description": "花开的季节，想起我们的约定。",
+    "color": "#f3e5f5",
     "tags": ["花", "約束"]
   }
 ]
