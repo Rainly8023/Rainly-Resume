@@ -107,7 +107,7 @@ export async function renderBlogDetail(containerId, slug) {
 
   const post = posts.find(p => p.slug === slug);
   if (!post) {
-    container.innerHTML = '<div class="blog-detail"><h1>文章不存在 😿</h1><a href="/blog" class="kawaii-btn">← 返回博客</a></div>';
+    container.innerHTML = '<div class="blog-detail"><h1>文章不存在 😿</h1><a href="/blog.html" class="kawaii-btn">← 返回博客</a></div>';
     return;
   }
 
@@ -133,7 +133,7 @@ export async function renderBlogDetail(containerId, slug) {
       <div class="date">${post.date} · ${(post.tags||[]).join(' / ')}</div>
       <div class="content">${bodyHtml}</div>
       <div style="margin-top:40px;text-align:center">
-        <a href="/blog" class="kawaii-btn purple">← 返回列表</a>
+        <a href="/blog.html" class="kawaii-btn purple">← 返回列表</a>
       </div>
     </div>
     <div class="progress-bar" id="progress-bar"></div>
@@ -142,11 +142,16 @@ export async function renderBlogDetail(containerId, slug) {
   // Reading progress bar
   const progressBar = document.getElementById('progress-bar');
   if (progressBar) {
+    // Remove any previously attached scroll handler to prevent leaks
+    if (window._blogScrollHandler) {
+      window.removeEventListener('scroll', window._blogScrollHandler);
+    }
     const onScroll = () => {
       const scrollH = document.documentElement.scrollHeight - window.innerHeight;
       const progress = scrollH > 0 ? window.scrollY / scrollH : 0;
       progressBar.style.transform = `scaleX(${progress})`;
     };
+    window._blogScrollHandler = onScroll;
     window.addEventListener('scroll', onScroll, { passive: true });
   }
 

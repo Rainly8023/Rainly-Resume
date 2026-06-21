@@ -4,6 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>美少女画廊 · Rainly</title>
+  <meta name="description" content="Rainly 的美少女画廊 —— 3D 拍立得旋转木马展示">
   <meta name="theme-color" content="#fce4ec">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌸</text></svg>">
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500&family=Noto+Serif+SC:wght@200;300;400&family=Klee+One&family=ZCOOL+KuaiLe&display=swap" rel="stylesheet">
@@ -17,9 +18,9 @@
     <a href="/" class="nav-brand">🌸 Rainly</a>
     <div class="nav-links">
       <a href="/">首页</a>
-      <a href="/gallery" class="active">画廊</a>
-      <a href="/blog">博客</a>
-      <a href="/about">关于</a>
+      <a href="/gallery.html" class="active">画廊</a>
+      <a href="/blog.html">博客</a>
+      <a href="/about.html">关于</a>
     </div>
   </nav>
 
@@ -31,15 +32,13 @@
     <img src="" alt="">
     <h3></h3>
     <p></p>
-    <button class="kawaii-btn" onclick="document.dispatchEvent(new KeyboardEvent('keydown',{key:'Escape'}))" style="margin-top:16px">✕ 关闭</button>
+    <button class="kawaii-btn" onclick="window.dispatchEvent(new KeyboardEvent('keydown',{key:'Escape'}))" style="margin-top:16px">✕ 关闭</button>
   </div>
 
   <script type="importmap">
   { "imports": { "three": "https://unpkg.com/three@0.160.0/build/three.module.js" } }
   </script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"
-    integrity="sha384-g4NTh/Iv5PPU4xPyhEWqPcwtNXOvdaDI8LLnyYfyNZOjKJeYQyjzQ9X5275eBjpt"
-    crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
 
   <script type="module">
     import { startPetals } from './js/sakura-petals.js';

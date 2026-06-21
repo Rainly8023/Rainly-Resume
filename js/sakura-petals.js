@@ -57,7 +57,7 @@ export function startPetals(canvasId) {
   for (let i = 0; i < petalCount; i++) {
     const p = createPetal(); p.y = Math.random() * h; petals.push(p);
   }
-  for (let i = 0; i < starCount; i++) stars.push(createStar());
+  // stars already created in resize() above
 
   let lastTime = performance.now();
   let animationId;

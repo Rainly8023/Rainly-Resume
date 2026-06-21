@@ -59,8 +59,8 @@ export function startMouseTrail(canvasId) {
       if (t.life <= 0) { trails.splice(i, 1); continue; }
       ctx.beginPath();
       ctx.arc(t.x, t.y, t.size * t.life, 0, Math.PI * 2);
-      const alpha = Math.floor(t.life * 0.6 * 255).toString(16).padStart(2, '0');
-      ctx.fillStyle = t.color + alpha;
+      const r = parseInt(t.color.slice(1,3),16), g = parseInt(t.color.slice(3,5),16), b = parseInt(t.color.slice(5,7),16);
+      ctx.fillStyle = `rgba(${r},${g},${b},${t.life * 0.6})`;
       ctx.fill();
     }
     animationId = requestAnimationFrame(draw);

@@ -4,6 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>关于我 · Rainly</title>
+  <meta name="description" content="关于 Rainly —— 一个喜欢拍照、写代码、看动漫的旅行者">
   <meta name="theme-color" content="#fce4ec">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌸</text></svg>">
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500&family=Noto+Serif+SC:wght@200;300;400&family=Klee+One&family=ZCOOL+KuaiLe&display=swap" rel="stylesheet">
@@ -17,9 +18,9 @@
     <a href="/" class="nav-brand">🌸 Rainly</a>
     <div class="nav-links">
       <a href="/">首页</a>
-      <a href="/gallery">画廊</a>
-      <a href="/blog">博客</a>
-      <a href="/about" class="active">关于</a>
+      <a href="/gallery.html">画廊</a>
+      <a href="/blog.html">博客</a>
+      <a href="/about.html" class="active">关于</a>
     </div>
   </nav>
 
@@ -63,7 +64,7 @@
       .then(r => r.json())
       .then(data => {
         if (data.nickname) document.getElementById('profile-name').textContent = data.nickname;
-        if (data.bio) document.getElementById('profile-bio').textContent = data.bio;
+        if (data.bio) document.getElementById('profile-bio').innerHTML = data.bio.replace(/\n/g, '<br>');
         if (data.avatar) document.getElementById('profile-avatar').src = data.avatar;
       })
       .catch(() => { /* use defaults */ });

@@ -246,6 +246,7 @@ export function initGallery(containerId, photos) {
   // Animation loop
   let lastTime = performance.now();
   let animId;
+  const _tmpVec3 = new THREE.Vector3();
 
   function animate(timestamp) {
     animId = requestAnimationFrame(animate);
@@ -279,7 +280,7 @@ export function initGallery(containerId, photos) {
       const isSelected = c === selectedCard;
       const targetScale = isSelected ? 1.15 : (isHovered ? 1.08 : 1);
       c.scale.lerp(
-        new THREE.Vector3(targetScale, targetScale, targetScale),
+        _tmpVec3.set(targetScale, targetScale, targetScale),
         0.1 * dt
       );
     });
