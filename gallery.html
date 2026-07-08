@@ -6,8 +6,21 @@
   <title>美少女画廊 · Rainly</title>
   <meta name="description" content="Rainly 的美少女画廊 —— 3D 拍立得旋转木马展示">
   <meta name="theme-color" content="#fce4ec">
+  <!-- Open Graph -->
+  <meta property="og:title" content="美少女画廊 · Rainly">
+  <meta property="og:description" content="Rainly 的美少女画廊 —— 3D 拍立得旋转木马展示">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://carterthyia.cloud/gallery.html">
+  <meta property="og:image" content="https://images.unsplash.com/photo-1523712999610-f77fbcfc3843?w=1200&q=80">
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="美少女画廊 · Rainly">
+  <meta name="twitter:description" content="Rainly 的美少女画廊 —— 3D 拍立得旋转木马展示">
+  <meta name="twitter:image" content="https://images.unsplash.com/photo-1523712999610-f77fbcfc3843?w=1200&q=80">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌸</text></svg>">
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500&family=Noto+Serif+SC:wght@200;300;400&family=Klee+One&family=ZCOOL+KuaiLe&display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500&family=Noto+Serif+SC:wght@200;300;400&family=Klee+One&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/kawaii.css">
 </head>
 <body>
@@ -16,6 +29,7 @@
 
   <nav class="kawaii-nav">
     <a href="/" class="nav-brand">🌸 Rainly</a>
+    <button class="hamburger" aria-label="菜单" onclick="this.nextElementSibling.classList.toggle('open')">☰</button>
     <div class="nav-links">
       <a href="/">首页</a>
       <a href="/gallery.html" class="active">画廊</a>
@@ -24,39 +38,27 @@
     </div>
   </nav>
 
-  <div id="gallery-container"></div>
+  <main id="gallery-container"></main>
 
   <div class="gallery-info">🖱 拖拽旋转 · 滚轮缩放 · 点击查看 · Esc 关闭</div>
 
-  <div class="gallery-detail" id="gallery-detail">
-    <img src="" alt="">
+  <div class="gallery-detail" id="gallery-detail" role="dialog" aria-label="图片详情">
+    <img src="" alt="画廊图片详情">
     <h3></h3>
     <p></p>
     <button class="kawaii-btn" onclick="window.dispatchEvent(new KeyboardEvent('keydown',{key:'Escape'}))" style="margin-top:16px">✕ 关闭</button>
   </div>
 
   <script type="importmap">
-  { "imports": { "three": "https://unpkg.com/three@0.160.0/build/three.module.js" } }
+  { "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js" } }
   </script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
 
   <script type="module">
-    import { startPetals } from './js/sakura-petals.js';
-    import { startClickHearts } from './js/click-heart.js';
+    import { initEffects } from './js/init.js';
     import { initGallery } from './js/gallery-3d.js';
 
-    const cleanupFns = [];
-    cleanupFns.push(startPetals('bg-canvas'));
-
-    const heartCanvas = document.createElement('canvas');
-    heartCanvas.id = 'heart-canvas';
-    Object.assign(heartCanvas.style, {
-      position: 'fixed', top: '0', left: '0',
-      width: '100%', height: '100%',
-      zIndex: '3', pointerEvents: 'none'
-    });
-    document.body.appendChild(heartCanvas);
-    cleanupFns.push(startClickHearts('heart-canvas'));
+    const cleanupFns = initEffects();
 
     // Load gallery data
     fetch('/content/gallery.json')

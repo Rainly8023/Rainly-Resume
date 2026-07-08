@@ -6,10 +6,21 @@
   <title>Rainly · 星空入口</title>
   <meta name="description" content="Rainly 的二次元小站 —— 美少女画廊 & 博客">
   <meta name="theme-color" content="#fce4ec">
+  <!-- Open Graph -->
+  <meta property="og:title" content="Rainly · 星空入口">
+  <meta property="og:description" content="Rainly 的二次元小站 —— 美少女画廊 & 博客">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://carterthyia.cloud/">
+  <meta property="og:image" content="https://images.unsplash.com/photo-1523712999610-f77fbcfc3843?w=1200&q=80">
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Rainly · 星空入口">
+  <meta name="twitter:description" content="Rainly 的二次元小站 —— 美少女画廊 & 博客">
+  <meta name="twitter:image" content="https://images.unsplash.com/photo-1523712999610-f77fbcfc3843?w=1200&q=80">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌸</text></svg>">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500&family=Noto+Serif+SC:wght@200;300;400&family=Klee+One&family=ZCOOL+KuaiLe&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500&family=Noto+Serif+SC:wght@200;300;400&family=Klee+One&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/kawaii.css">
 </head>
 <body>
@@ -18,6 +29,7 @@
 
   <nav class="kawaii-nav">
     <a href="/" class="nav-brand">🌸 Rainly</a>
+    <button class="hamburger" aria-label="菜单" onclick="this.nextElementSibling.classList.toggle('open')">☰</button>
     <div class="nav-links">
       <a href="/" class="active">首页</a>
       <a href="/gallery.html">画廊</a>
@@ -26,7 +38,7 @@
     </div>
   </nav>
 
-  <div class="hero">
+  <main class="hero">
     <h1>Rainly</h1>
     <p class="subtitle">✦ 星と花の小世界 ✦</p>
     <div class="hero-nav">
@@ -34,39 +46,15 @@
       <a href="/blog.html" class="kawaii-btn purple">📖 博客</a>
       <a href="/about.html" class="kawaii-btn">💝 关于我</a>
     </div>
-  </div>
+  </main>
+
+  <footer class="kawaii-footer">
+    <p>© 2026 Rainly · 用 💝 构建</p>
+  </footer>
 
   <script type="module">
-    import { startPetals } from './js/sakura-petals.js';
-    import { startMouseTrail } from './js/mouse-trail.js';
-    import { startClickHearts } from './js/click-heart.js';
-
-    const cleanupFns = [];
-
-    // Sakura petals on bg canvas
-    cleanupFns.push(startPetals('bg-canvas'));
-
-    // Mouse trail canvas (separate layer for independent clearing)
-    const trailCanvas = document.createElement('canvas');
-    trailCanvas.id = 'trail-canvas';
-    Object.assign(trailCanvas.style, {
-      position: 'fixed', top: '0', left: '0',
-      width: '100%', height: '100%',
-      zIndex: '1', pointerEvents: 'none'
-    });
-    document.body.appendChild(trailCanvas);
-    cleanupFns.push(startMouseTrail('trail-canvas'));
-
-    // Click hearts canvas
-    const heartCanvas = document.createElement('canvas');
-    heartCanvas.id = 'heart-canvas';
-    Object.assign(heartCanvas.style, {
-      position: 'fixed', top: '0', left: '0',
-      width: '100%', height: '100%',
-      zIndex: '3', pointerEvents: 'none'
-    });
-    document.body.appendChild(heartCanvas);
-    cleanupFns.push(startClickHearts('heart-canvas'));
+    import { initEffects } from './js/init.js';
+    initEffects({ mouseTrail: true });
   </script>
 </body>
 </html>

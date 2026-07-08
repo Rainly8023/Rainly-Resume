@@ -6,8 +6,19 @@
   <title>关于我 · Rainly</title>
   <meta name="description" content="关于 Rainly —— 一个喜欢拍照、写代码、看动漫的旅行者">
   <meta name="theme-color" content="#fce4ec">
+  <!-- Open Graph -->
+  <meta property="og:title" content="关于我 · Rainly">
+  <meta property="og:description" content="关于 Rainly —— 一个喜欢拍照、写代码、看动漫的旅行者">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://carterthyia.cloud/about.html">
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="关于我 · Rainly">
+  <meta name="twitter:description" content="关于 Rainly —— 一个喜欢拍照、写代码、看动漫的旅行者">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌸</text></svg>">
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500&family=Noto+Serif+SC:wght@200;300;400&family=Klee+One&family=ZCOOL+KuaiLe&display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500&family=Noto+Serif+SC:wght@200;300;400&family=Klee+One&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/kawaii.css">
 </head>
 <body>
@@ -16,6 +27,7 @@
 
   <nav class="kawaii-nav">
     <a href="/" class="nav-brand">🌸 Rainly</a>
+    <button class="hamburger" aria-label="菜单" onclick="this.nextElementSibling.classList.toggle('open')">☰</button>
     <div class="nav-links">
       <a href="/">首页</a>
       <a href="/gallery.html">画廊</a>
@@ -24,47 +36,38 @@
     </div>
   </nav>
 
-  <div class="about-container">
-    <div class="about-card reveal">
-      <img class="avatar" src="https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?w=200&h=200&fit=crop&crop=face" alt="avatar" id="profile-avatar">
+  <main class="about-container">
+    <section class="about-card reveal">
+      <img class="avatar" src="https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?w=200&h=200&fit=crop&crop=face" alt="Rainly 的头像" id="profile-avatar">
       <h3 id="profile-name">Rainly</h3>
       <div class="tags" id="profile-tags">
         <span>🌸 二次元</span><span>💻 程序员</span><span>✈️ 旅行</span>
       </div>
       <p class="bio" id="profile-bio">用脚步重新认识自己住的这个世界。<br>喜欢拍照、写代码、看动漫。</p>
       <div class="social-links">
-        <a href="https://github.com/Rainly8023" target="_blank" class="kawaii-btn purple" style="padding:8px 20px;font-size:12px">🐙 GitHub</a>
+        <a href="https://github.com/Rainly8023" target="_blank" rel="noopener noreferrer" class="kawaii-btn purple" style="padding:8px 20px;font-size:12px">🐙 GitHub</a>
         <a href="mailto:hi@carterthyia.cloud" class="kawaii-btn" style="padding:8px 20px;font-size:12px">💌 Email</a>
       </div>
-    </div>
-  </div>
+    </section>
+  </main>
+
+  <footer class="kawaii-footer">
+    <p>© 2026 Rainly · 用 💝 构建</p>
+  </footer>
 
   <script type="module">
-    import { startPetals } from './js/sakura-petals.js';
-    import { startClickHearts } from './js/click-heart.js';
+    import { initEffects } from './js/init.js';
     import { initScrollReveal } from './js/scroll-reveal.js';
 
-    const cleanupFns = [];
-    cleanupFns.push(startPetals('bg-canvas'));
-
-    const heartCanvas = document.createElement('canvas');
-    heartCanvas.id = 'heart-canvas';
-    Object.assign(heartCanvas.style, {
-      position: 'fixed', top: '0', left: '0',
-      width: '100%', height: '100%',
-      zIndex: '3', pointerEvents: 'none'
-    });
-    document.body.appendChild(heartCanvas);
-    cleanupFns.push(startClickHearts('heart-canvas'));
-
+    initEffects();
     initScrollReveal();
 
-    // Load profile from CMS data
+    // Load profile from CMS data (XSS-safe: using textContent)
     fetch('/content/settings/profile.json')
       .then(r => r.json())
       .then(data => {
         if (data.nickname) document.getElementById('profile-name').textContent = data.nickname;
-        if (data.bio) document.getElementById('profile-bio').innerHTML = data.bio.replace(/\n/g, '<br>');
+        if (data.bio) document.getElementById('profile-bio').textContent = data.bio;
         if (data.avatar) document.getElementById('profile-avatar').src = data.avatar;
       })
       .catch(() => { /* use defaults */ });

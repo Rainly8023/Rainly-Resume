@@ -2,7 +2,8 @@
 
 export function startPetals(canvasId) {
   const canvas = document.getElementById(canvasId);
-  if (!canvas) return;
+  if (!canvas) return () => {};
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return () => {};
 
   const ctx = canvas.getContext('2d');
   const dpr = Math.min(window.devicePixelRatio || 1, 2);
@@ -61,6 +62,7 @@ export function startPetals(canvasId) {
 
   let lastTime = performance.now();
   let animationId;
+  let paused = false;
 
   function draw(timestamp) {
     const dt = Math.min((timestamp - lastTime) / 16, 3);
@@ -106,8 +108,22 @@ export function startPetals(canvasId) {
   }
   animationId = requestAnimationFrame(draw);
 
+  // Pause when page is not visible
+  function onVisibilityChange() {
+    if (document.hidden) {
+      cancelAnimationFrame(animationId);
+      paused = true;
+    } else if (paused) {
+      paused = false;
+      lastTime = performance.now();
+      animationId = requestAnimationFrame(draw);
+    }
+  }
+  document.addEventListener('visibilitychange', onVisibilityChange);
+
   return () => {
     cancelAnimationFrame(animationId);
     window.removeEventListener('resize', resize);
+    document.removeEventListener('visibilitychange', onVisibilityChange);
   };
 }

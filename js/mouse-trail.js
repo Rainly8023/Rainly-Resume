@@ -2,7 +2,8 @@
 
 export function startMouseTrail(canvasId) {
   const canvas = document.getElementById(canvasId);
-  if (!canvas) return;
+  if (!canvas) return () => {};
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return () => {};
 
   const ctx = canvas.getContext('2d');
   let w, h;
@@ -21,9 +22,15 @@ export function startMouseTrail(canvasId) {
   resize();
   window.addEventListener('resize', resize);
 
-  function onMouseMove(e) { mouseX = e.clientX; mouseY = e.clientY; }
+  function onMouseMove(e) {
+    mouseX = e.clientX; mouseY = e.clientY;
+    if (!running && !paused) startLoop();
+  }
   function onMouseLeave() { mouseX = -100; mouseY = -100; }
-  function onTouchMove(e) { mouseX = e.touches[0].clientX; mouseY = e.touches[0].clientY; }
+  function onTouchMove(e) {
+    mouseX = e.touches[0].clientX; mouseY = e.touches[0].clientY;
+    if (!running && !paused) startLoop();
+  }
   function onTouchEnd() { mouseX = -100; mouseY = -100; }
 
   document.addEventListener('mousemove', onMouseMove);
@@ -35,6 +42,20 @@ export function startMouseTrail(canvasId) {
   let lastEmit = 0;
   let lastTime = performance.now();
   let animationId;
+  let paused = false;
+  let running = false;
+
+  function startLoop() {
+    if (running) return;
+    running = true;
+    lastTime = performance.now();
+    animationId = requestAnimationFrame(draw);
+  }
+
+  function stopLoop() {
+    running = false;
+    cancelAnimationFrame(animationId);
+  }
 
   function draw(timestamp) {
     const dt = Math.min((timestamp - lastTime) / 16, 3);
@@ -63,9 +84,28 @@ export function startMouseTrail(canvasId) {
       ctx.fillStyle = `rgba(${r},${g},${b},${t.life * 0.6})`;
       ctx.fill();
     }
+
+    // Stop loop when no trails left and mouse is away
+    if (trails.length === 0 && (mouseX <= 0 || mouseY <= 0)) {
+      stopLoop();
+      return;
+    }
+
     animationId = requestAnimationFrame(draw);
   }
-  animationId = requestAnimationFrame(draw);
+
+  // Pause when page is not visible
+  function onVisibilityChange() {
+    if (document.hidden) {
+      cancelAnimationFrame(animationId);
+      paused = true;
+      running = false;
+    } else if (paused) {
+      paused = false;
+      if (trails.length > 0) startLoop();
+    }
+  }
+  document.addEventListener('visibilitychange', onVisibilityChange);
 
   return () => {
     cancelAnimationFrame(animationId);
@@ -74,5 +114,6 @@ export function startMouseTrail(canvasId) {
     document.removeEventListener('mouseleave', onMouseLeave);
     document.removeEventListener('touchmove', onTouchMove);
     document.removeEventListener('touchend', onTouchEnd);
+    document.removeEventListener('visibilitychange', onVisibilityChange);
   };
 }

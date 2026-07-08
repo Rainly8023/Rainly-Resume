@@ -126,6 +126,7 @@ export function initGallery(containerId, photos) {
   let autoRotate = true;
   const autoSpeed = 0.003;
   let selectedCard = null;
+  let mouseDirty = false;
 
   function onPointerDown(e) {
     isDragging = true;
@@ -183,6 +184,7 @@ export function initGallery(containerId, photos) {
     if (!isDragging) {
       mouse.x = (e.clientX / window.innerWidth) * 2 - 1;
       mouse.y = -(e.clientY / window.innerHeight) * 2 + 1;
+      mouseDirty = true;
     }
   }
   window.addEventListener('mousemove', onMouseMove);
@@ -262,17 +264,20 @@ export function initGallery(containerId, photos) {
     ringGroup.rotation.y = rotationY;
     ringGroup.rotation.x = rotationX;
 
-    // Hover scale
-    raycaster.setFromCamera(mouse, camera);
-    const hoverIntersects = raycaster.intersectObjects(cards, true);
+    // Hover scale (only raycast when mouse has moved)
     let currentHovered = null;
-    for (const h of hoverIntersects) {
-      let obj = h.object;
-      while (obj) {
-        if (obj.userData.photo && cards.includes(obj)) { currentHovered = obj; break; }
-        obj = obj.parent;
+    if (mouseDirty) {
+      mouseDirty = false;
+      raycaster.setFromCamera(mouse, camera);
+      const hoverIntersects = raycaster.intersectObjects(cards, true);
+      for (const h of hoverIntersects) {
+        let obj = h.object;
+        while (obj) {
+          if (obj.userData.photo && cards.includes(obj)) { currentHovered = obj; break; }
+          obj = obj.parent;
+        }
+        if (currentHovered) break;
       }
-      if (currentHovered) break;
     }
 
     cards.forEach(c => {
@@ -292,6 +297,16 @@ export function initGallery(containerId, photos) {
   }
   animId = requestAnimationFrame(animate);
 
+  function onVisibilityChange() {
+    if (document.hidden) {
+      cancelAnimationFrame(animId);
+    } else {
+      lastTime = performance.now();
+      animId = requestAnimationFrame(animate);
+    }
+  }
+  document.addEventListener('visibilitychange', onVisibilityChange);
+
   // Cleanup
   return () => {
     cancelAnimationFrame(animId);
@@ -303,6 +318,7 @@ export function initGallery(containerId, photos) {
     window.removeEventListener('mousemove', onMouseMove);
     renderer.domElement.removeEventListener('click', onClick);
     window.removeEventListener('keydown', onKeyDown);
+    document.removeEventListener('visibilitychange', onVisibilityChange);
     disposables.geometries.forEach(g => g.dispose());
     disposables.materials.forEach(m => m.dispose());
     disposables.textures.forEach(t => t.dispose());

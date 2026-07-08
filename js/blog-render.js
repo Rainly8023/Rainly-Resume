@@ -1,6 +1,8 @@
 // js/blog-render.js — 博客 Markdown 渲染 + 列表/详情切换
 /* global marked */
 
+const escapeHtml = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
 let posts = [];
 
 export async function loadPosts() {
@@ -66,11 +68,11 @@ export function renderBlogList(containerId) {
     <div class="blog-hero">
       <div class="ribbon">✦ 最新記事 ✦</div>
       <h2>Rainly Blog</h2>
-      <div class="featured" onclick="window.location.hash='#/post/${featured.slug}'" style="cursor:pointer">
-        <img src="${featured.image}" alt="${featured.title}" loading="lazy">
-        <h3>${featured.title}</h3>
-        <p style="color:var(--text-light);font-size:13px;margin-top:6px">${featured.date} · ${(featured.tags||[]).join(' / ')}</p>
-        <p style="color:var(--text-light);font-size:14px;margin-top:10px;line-height:1.8">${featured.summary}</p>
+      <div class="featured" onclick="window.location.hash='#/post/${escapeHtml(featured.slug)}'" style="cursor:pointer">
+        <img src="${escapeHtml(featured.image)}" alt="${escapeHtml(featured.title)}" loading="lazy">
+        <h3>${escapeHtml(featured.title)}</h3>
+        <p style="color:var(--text-light);font-size:13px;margin-top:6px">${escapeHtml(featured.date)} · ${(featured.tags||[]).map(escapeHtml).join(' / ')}</p>
+        <p style="color:var(--text-light);font-size:14px;margin-top:10px;line-height:1.8">${escapeHtml(featured.summary)}</p>
       </div>
     </div>
     <div class="ornament-divider">✦ もっと読む ✦</div>
@@ -87,11 +89,11 @@ export function renderBlogList(containerId) {
     card.style.animationDelay = (i * 0.1) + 's';
     card.onclick = () => { window.location.hash = `#/post/${post.slug}`; };
     card.innerHTML = `
-      <img class="card-img" src="${post.image}" alt="${post.title}" loading="lazy">
+      <img class="card-img" src="${escapeHtml(post.image)}" alt="${escapeHtml(post.title)}" loading="lazy">
       <div class="card-body">
-        <h3>${post.title}</h3>
-        <div class="meta">${post.date} · ${(post.tags||[]).join(' / ')}</div>
-        <div class="summary">${post.summary}</div>
+        <h3>${escapeHtml(post.title)}</h3>
+        <div class="meta">${escapeHtml(post.date)} · ${(post.tags||[]).map(escapeHtml).join(' / ')}</div>
+        <div class="summary">${escapeHtml(post.summary)}</div>
       </div>
     `;
     grid.appendChild(card);
@@ -128,9 +130,9 @@ export async function renderBlogDetail(containerId, slug) {
 
   container.innerHTML = `
     <div class="blog-detail reveal">
-      ${post.image ? `<img class="cover" src="${post.image}" alt="${post.title}">` : ''}
-      <h1>${post.title}</h1>
-      <div class="date">${post.date} · ${(post.tags||[]).join(' / ')}</div>
+      ${post.image ? `<img class="cover" src="${escapeHtml(post.image)}" alt="${escapeHtml(post.title)}">` : ''}
+      <h1>${escapeHtml(post.title)}</h1>
+      <div class="date">${escapeHtml(post.date)} · ${(post.tags||[]).map(escapeHtml).join(' / ')}</div>
       <div class="content">${bodyHtml}</div>
       <div style="margin-top:40px;text-align:center">
         <a href="/blog.html" class="kawaii-btn purple">← 返回列表</a>

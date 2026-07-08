@@ -3,18 +3,15 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>博客 · Rainly</title>
-  <meta name="description" content="Rainly 的博客 —— 记录日常、旅行与二次元的碎碎念">
+  <title>404 · 页面走丢了 · Rainly</title>
+  <meta name="description" content="页面未找到 —— 迷路的页面正在花海中寻找回家的路">
   <meta name="theme-color" content="#fce4ec">
   <!-- Open Graph -->
-  <meta property="og:title" content="博客 · Rainly">
-  <meta property="og:description" content="Rainly 的博客 —— 记录日常、旅行与二次元的碎碎念">
+  <meta property="og:title" content="404 · 页面走丢了">
+  <meta property="og:description" content="迷路的页面正在花海中寻找回家的路...">
   <meta property="og:type" content="website">
-  <meta property="og:url" content="https://carterthyia.cloud/blog.html">
-  <!-- Twitter Card -->
-  <meta name="twitter:card" content="summary">
-  <meta name="twitter:title" content="博客 · Rainly">
-  <meta name="twitter:description" content="Rainly 的博客 —— 记录日常、旅行与二次元的碎碎念">
+  <meta property="og:url" content="https://carterthyia.cloud/404.html">
+  <meta property="og:site_name" content="Rainly">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌸</text></svg>">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -31,38 +28,25 @@
     <div class="nav-links">
       <a href="/">首页</a>
       <a href="/gallery.html">画廊</a>
-      <a href="/blog.html" class="active">博客</a>
+      <a href="/blog.html">博客</a>
       <a href="/about.html">关于</a>
     </div>
   </nav>
 
-  <main id="blog-content"></main>
+  <main class="not-found">
+    <h1>404</h1>
+    <p>页面走丢了 😿</p>
+    <p class="sub">迷路的页面正在花海中寻找回家的路...</p>
+    <a href="/" class="kawaii-btn">🌸 回到首页</a>
+  </main>
 
   <footer class="kawaii-footer">
     <p>© 2026 Rainly · 用 💝 构建</p>
   </footer>
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/12.0.0/marked.min.js"></script>
-
   <script type="module">
     import { initEffects } from './js/init.js';
-    import { loadPosts, renderBlogList, renderBlogDetail } from './js/blog-render.js';
-
     initEffects();
-
-    function route() {
-      const hash = window.location.hash;
-      const match = hash.match(/^#\/post\/(.+)$/);
-      if (match) {
-        renderBlogDetail('blog-content', match[1]);
-      } else {
-        renderBlogList('blog-content');
-      }
-    }
-
-    await loadPosts();
-    route();
-    window.addEventListener('hashchange', route);
   </script>
 </body>
 </html>

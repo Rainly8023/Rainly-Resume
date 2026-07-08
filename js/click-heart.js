@@ -2,7 +2,8 @@
 
 export function startClickHearts(canvasId) {
   const canvas = document.getElementById(canvasId);
-  if (!canvas) return;
+  if (!canvas) return () => {};
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return () => {};
 
   const ctx = canvas.getContext('2d');
   let w, h;
@@ -41,6 +42,24 @@ export function startClickHearts(canvasId) {
     ctx.closePath();
   }
 
+  let animationId;
+  let running = false;
+  let paused = false;
+  let lastTime = performance.now();
+
+  function startLoop() {
+    if (running) return;
+    running = true;
+    lastTime = performance.now();
+    animationId = requestAnimationFrame(draw);
+  }
+
+  function stopLoop() {
+    running = false;
+    cancelAnimationFrame(animationId);
+    ctx.clearRect(0, 0, w, h);
+  }
+
   function burst(x, y) {
     if (particles.length >= MAX_PARTICLES) return;
     const count = 12;
@@ -56,6 +75,7 @@ export function startClickHearts(canvasId) {
         color: ['#f8bbd0','#f48fb1','#c5cae9','#fff9c4','#ce93d8'][Math.floor(Math.random()*5)],
       });
     }
+    if (!running && !paused) startLoop();
   }
 
   function onClick(e) {
@@ -63,9 +83,6 @@ export function startClickHearts(canvasId) {
     burst(e.clientX, e.clientY);
   }
   document.addEventListener('click', onClick);
-
-  let lastTime = performance.now();
-  let animationId;
 
   function draw(timestamp) {
     const dt = Math.min((timestamp - lastTime) / 16, 3);
@@ -87,13 +104,33 @@ export function startClickHearts(canvasId) {
       ctx.fill();
       ctx.restore();
     }
+
+    // Stop loop when no particles left
+    if (particles.length === 0) {
+      stopLoop();
+      return;
+    }
+
     animationId = requestAnimationFrame(draw);
   }
-  animationId = requestAnimationFrame(draw);
+
+  // Pause when page is not visible
+  function onVisibilityChange() {
+    if (document.hidden) {
+      cancelAnimationFrame(animationId);
+      paused = true;
+      running = false;
+    } else if (paused) {
+      paused = false;
+      if (particles.length > 0) startLoop();
+    }
+  }
+  document.addEventListener('visibilitychange', onVisibilityChange);
 
   return () => {
     cancelAnimationFrame(animationId);
     window.removeEventListener('resize', resize);
     document.removeEventListener('click', onClick);
+    document.removeEventListener('visibilitychange', onVisibilityChange);
   };
 }
