@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>博客 · Rainly</title>
+  <meta name="description" content="Rainly 的博客 —— 记录日常、旅行与二次元的碎碎念">
+  <meta name="theme-color" content="#fce4ec">
+  <!-- Open Graph -->
+  <meta property="og:title" content="博客 · Rainly">
+  <meta property="og:description" content="Rainly 的博客 —— 记录日常、旅行与二次元的碎碎念">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://carterthyia.cloud/blog.html">
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="博客 · Rainly">
+  <meta name="twitter:description" content="Rainly 的博客 —— 记录日常、旅行与二次元的碎碎念">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌸</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500&family=Noto+Serif+SC:wght@200;300;400&family=Klee+One&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/kawaii.css">
+</head>
+<body>
+
+  <canvas id="bg-canvas"></canvas>
+
+  <nav class="kawaii-nav">
+    <a href="/" class="nav-brand">🌸 Rainly</a>
+    <button class="hamburger" aria-label="菜单" onclick="this.nextElementSibling.classList.toggle('open')">☰</button>
+    <div class="nav-links">
+      <a href="/">首页</a>
+      <a href="/gallery.html">画廊</a>
+      <a href="/blog.html" class="active">博客</a>
+      <a href="/about.html">关于</a>
+    </div>
+  </nav>
+
+  <main id="blog-content"></main>
+
+  <footer class="kawaii-footer">
+    <p>© 2026 Rainly · 用 💝 构建</p>
+  </footer>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/12.0.0/marked.min.js"></script>
+
+  <script type="module">
+    import { initEffects } from './js/init.js';
+    import { loadPosts, renderBlogList, renderBlogDetail } from './js/blog-render.js';
+
+    initEffects();
+
+    function route() {
+      const hash = window.location.hash;
+      const match = hash.match(/^#\/post\/(.+)$/);
+      if (match) {
+        renderBlogDetail('blog-content', match[1]);
+      } else {
+        renderBlogList('blog-content');
+      }
+    }
+
+    await loadPosts();
+    route();
+    window.addEventListener('hashchange', route);
+  </script>
+</body>
+</html>

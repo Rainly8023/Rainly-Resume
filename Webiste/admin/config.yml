@@ -1,0 +1,67 @@
+# admin/config.yml — Decap CMS for Kawaii Site
+backend:
+  name: github
+  repo: Rainly8023/Rainly-Resume
+  branch: main
+
+site_url: https://carterthyia.cloud
+media_folder: images/uploads
+public_folder: /images/uploads
+locale: zh_Hans
+
+collections:
+  - name: gallery
+    label: "美少女画廊"
+    label_singular: "照片"
+    editor:
+      preview: false
+    files:
+      - label: "画廊数据"
+        name: gallery_data
+        file: content/gallery.json
+        fields:
+          - label: "照片列表"
+            name: photos
+            widget: list
+            fields:
+              - { label: "标题", name: title, widget: string }
+              - { label: "图片URL", name: image, widget: string }
+              - { label: "描述", name: description, widget: text }
+              - { label: "主题色", name: color, widget: string, default: "#fce4ec" }
+              - { label: "标签", name: tags, widget: list }
+
+  - name: blog
+    label: "博客"
+    label_singular: "文章"
+    folder: content/posts
+    create: true
+    slug: "{{slug}}"
+    editor:
+      preview: false
+    fields:
+      - { label: "标题", name: title, widget: string }
+      - { label: "日期", name: date, widget: datetime }
+      - { label: "封面图", name: image, widget: string }
+      - { label: "标签", name: tags, widget: list }
+      - { label: "摘要", name: summary, widget: text }
+      - { label: "正文", name: body, widget: markdown }
+
+  - name: settings
+    label: "网站设置"
+    editor:
+      preview: false
+    files:
+      - label: "个人信息"
+        name: profile
+        file: content/settings/profile.json
+        fields:
+          - { label: "昵称", name: nickname, widget: string }
+          - { label: "头像URL", name: avatar, widget: string }
+          - { label: "简介", name: bio, widget: text }
+          - label: "社交链接"
+            name: social
+            widget: object
+            fields:
+              - { label: "GitHub", name: github, widget: string }
+              - { label: "Twitter", name: twitter, widget: string }
+              - { label: "邮箱", name: email, widget: string }

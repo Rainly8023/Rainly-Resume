@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>404 · 页面走丢了 · Rainly</title>
+  <meta name="description" content="页面未找到 —— 迷路的页面正在花海中寻找回家的路">
+  <meta name="theme-color" content="#fce4ec">
+  <!-- Open Graph -->
+  <meta property="og:title" content="404 · 页面走丢了">
+  <meta property="og:description" content="迷路的页面正在花海中寻找回家的路...">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://carterthyia.cloud/404.html">
+  <meta property="og:site_name" content="Rainly">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌸</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500&family=Noto+Serif+SC:wght@200;300;400&family=Klee+One&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/kawaii.css">
+</head>
+<body>
+
+  <canvas id="bg-canvas"></canvas>
+
+  <nav class="kawaii-nav">
+    <a href="/" class="nav-brand">🌸 Rainly</a>
+    <button class="hamburger" aria-label="菜单" onclick="this.nextElementSibling.classList.toggle('open')">☰</button>
+    <div class="nav-links">
+      <a href="/">首页</a>
+      <a href="/gallery.html">画廊</a>
+      <a href="/blog.html">博客</a>
+      <a href="/about.html">关于</a>
+    </div>
+  </nav>
+
+  <main class="not-found">
+    <h1>404</h1>
+    <p>页面走丢了 😿</p>
+    <p class="sub">迷路的页面正在花海中寻找回家的路...</p>
+    <a href="/" class="kawaii-btn">🌸 回到首页</a>
+  </main>
+
+  <footer class="kawaii-footer">
+    <p>© 2026 Rainly · 用 💝 构建</p>
+  </footer>
+
+  <script type="module">
+    import { initEffects } from './js/init.js';
+    initEffects();
+  </script>
+</body>
+</html>
