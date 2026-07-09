@@ -32,6 +32,32 @@
   --sakura-pink-40: rgba(248,187,208,0.40);
   --lavender-dark: #5c4d80;
   --lavender-text: #7c6ba0;
+  --white: #ffffff;
+}
+
+/* Dark Mode Variables */
+[data-theme="dark"] {
+  --bg: #120d1e;
+  --text: #e0d8f0;
+  --text-light: #b0a8c8;
+  --card-bg: rgba(30, 20, 50, 0.85);
+  --glass-bg: rgba(30, 20, 50, 0.6);
+  --glass-border: rgba(255, 255, 255, 0.1);
+  --sakura-pink: #b388ff; /* Shift pink to neon purple/pink */
+  --sakura-light: #311b92;
+  --sakura-pink-15: rgba(179,136,255,0.15);
+  --sakura-pink-20: rgba(179,136,255,0.20);
+  --sakura-pink-25: rgba(179,136,255,0.25);
+  --sakura-pink-30: rgba(179,136,255,0.30);
+  --sakura-pink-35: rgba(179,136,255,0.35);
+  --sakura-pink-40: rgba(179,136,255,0.40);
+  --lavender: #7c4dff;
+  --lavender-light: #4527a0;
+  --lavender-dark: #b39ddb;
+  --lavender-text: #ede7f6;
+  --white: #2a1b38;
+  --shadow-soft: 0 4px 20px rgba(0,0,0,0.5);
+  --shadow-card: 0 8px 32px rgba(124,77,255,0.2);
 }
 
 /* ═══════════ Reset ═══════════ */
@@ -95,7 +121,7 @@ body {
 .kawaii-btn {
   display: inline-flex; align-items: center; gap: 8px;
   padding: 12px 28px; border-radius: 50px; border: 2px solid var(--sakura-pink);
-  background: white; color: var(--sakura-pink);
+  background: var(--white); color: var(--sakura-pink);
   font-family: var(--font-body); font-size: 14px; letter-spacing: 2px;
   cursor: pointer; text-decoration: none;
   transition: all 0.3s var(--ease-bounce);
@@ -124,7 +150,7 @@ body {
 
 /* ═══════════ Blog Magazine Cards ═══════════ */
 .blog-card {
-  background: white; border-radius: var(--radius);
+  background: var(--white); border-radius: var(--radius);
   overflow: hidden; border: 1px solid var(--sakura-pink-20);
   box-shadow: var(--shadow-soft);
   transition: all 0.4s var(--ease-bounce);

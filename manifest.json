@@ -1,0 +1,16 @@
+{
+  "name": "Rainly · 星空入口",
+  "short_name": "Rainly",
+  "description": "Rainly 的二次元小站 —— 美少女画廊 & 博客",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#fce4ec",
+  "theme_color": "#fce4ec",
+  "icons": [
+    {
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌸</text></svg>",
+      "type": "image/svg+xml",
+      "sizes": "512x512"
+    }
+  ]
+}
