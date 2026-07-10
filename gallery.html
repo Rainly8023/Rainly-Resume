@@ -58,8 +58,10 @@
   <script type="module">
     import { initEffects } from './js/init.js';
     import { initGallery } from './js/gallery-3d.js';
+    import { initScratchCard } from './js/scratch-card.js';
 
     const cleanupFns = initEffects();
+    initScratchCard();
 
     // Load gallery data
     fetch('/content/gallery.json')

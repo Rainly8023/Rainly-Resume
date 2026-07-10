@@ -2,6 +2,9 @@ import { startPetals } from './sakura-petals.js';
 import { startStars } from './star-field.js';
 import { startClickHearts } from './click-heart.js';
 import { initMusicPlayer } from './kawaii-player.js';
+import { initTilt } from './tilt.js';
+import { initKonami } from './konami.js';
+import { initCollapseMode } from './collapse.js';
 
 function createOverlayCanvas(id, zIndex) {
   const c = document.createElement('canvas');
@@ -36,6 +39,15 @@ export function initEffects(options = {}) {
 
   // Init Music Player
   initMusicPlayer();
+  
+  // Init Tilt Cards
+  initTilt();
+
+  // Init Konami Code
+  initKonami();
+  
+  // Init Collapse Mode
+  initCollapseMode();
 
   // Optional: mouse trail (only on index page)
   if (options.mouseTrail) {

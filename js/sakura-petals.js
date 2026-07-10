@@ -64,8 +64,25 @@ export function startPetals(canvasId) {
   let animationId;
   let paused = false;
 
+  // stars
+  // konami logic
+  let speedMultiplier = 1;
+  document.addEventListener('konami-egg', () => {
+    speedMultiplier = 10;
+    // Add extra petals temporarily
+    for (let i = 0; i < 100; i++) {
+      const p = createPetal(); 
+      p.y = Math.random() * h; 
+      petals.push(p);
+    }
+    setTimeout(() => {
+      speedMultiplier = 1;
+      petals.splice(petalCount, 100);
+    }, 5000);
+  });
+
   function draw(timestamp) {
-    const dt = Math.min((timestamp - lastTime) / 16, 3);
+    const dt = Math.min((timestamp - lastTime) / 16, 3) * speedMultiplier;
     lastTime = timestamp;
     ctx.clearRect(0, 0, w, h);
 
@@ -91,9 +108,22 @@ export function startPetals(canvasId) {
     petals.forEach(p => {
       p.y += p.speed * dt;
       p.x += p.drift * dt + Math.sin(p.wobble) * 0.5 * dt;
+
+      // Mouse repel logic
+      if (mouseX !== null && mouseY !== null) {
+        const dx = p.x - mouseX;
+        const dy = p.y - mouseY;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        if (dist < 100) {
+          const force = (100 - dist) / 100;
+          p.x += (dx / dist) * force * 5 * dt;
+          p.y += (dy / dist) * force * 5 * dt;
+        }
+      }
+
       p.wobble += p.wobbleSpeed * dt;
       p.rotation += p.rotSpeed * dt;
-      if (p.y > h + 30) { Object.assign(p, createPetal()); p.y = -30; }
+      if (p.y > h + 30 || p.x > w + 30 || p.x < -30) { Object.assign(p, createPetal()); p.y = -30; }
 
       ctx.save();
       ctx.globalAlpha = p.opacity;
@@ -106,6 +136,20 @@ export function startPetals(canvasId) {
 
     animationId = requestAnimationFrame(draw);
   }
+  
+  let mouseX = null;
+  let mouseY = null;
+  function onMouseMove(e) {
+    mouseX = e.clientX;
+    mouseY = e.clientY;
+  }
+  function onMouseLeave() {
+    mouseX = null;
+    mouseY = null;
+  }
+  document.addEventListener('mousemove', onMouseMove);
+  document.addEventListener('mouseleave', onMouseLeave);
+
   animationId = requestAnimationFrame(draw);
 
   // Pause when page is not visible
@@ -125,5 +169,7 @@ export function startPetals(canvasId) {
     cancelAnimationFrame(animationId);
     window.removeEventListener('resize', resize);
     document.removeEventListener('visibilitychange', onVisibilityChange);
+    document.removeEventListener('mousemove', onMouseMove);
+    document.removeEventListener('mouseleave', onMouseLeave);
   };
 }

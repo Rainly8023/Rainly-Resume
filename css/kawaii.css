@@ -63,6 +63,10 @@
 /* ═══════════ Reset ═══════════ */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
+a, button, .blog-card, .kawaii-card, .kawaii-btn {
+  cursor: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' width='24' height='24'><text y='20' font-size='20'>✨</text></svg>"), pointer !important;
+}
+
 html { background: var(--bg); scroll-behavior: smooth; }
 
 body {
@@ -72,6 +76,7 @@ body {
   min-height: 100vh;
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
+  cursor: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' width='24' height='24'><text y='20' font-size='20'>🪄</text></svg>"), auto;
 }
 
 /* ═══════════ Canvas Background Layer ═══════════ */
