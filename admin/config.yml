@@ -3,6 +3,7 @@ backend:
   name: github
   repo: Rainly8023/Rainly-Resume
   branch: main
+  base_url: https://github-oauth.netlify.app
 
 site_url: https://carterthyia.cloud
 media_folder: images/uploads
