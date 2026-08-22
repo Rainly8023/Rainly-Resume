@@ -54,10 +54,13 @@
 
   <!-- 2D Polaroid Grid View -->
   <section class="gallery-2d-container" id="gallery-2d-container">
-    <div class="blog-hero" style="padding-top:20px;padding-bottom:20px;">
+    <div class="blog-hero" style="padding-top:20px;padding-bottom:10px;">
       <div class="ribbon">✦ 拍立得相簿 ✦</div>
       <h2>Photo Collection</h2>
       <p style="color:var(--text-light);font-size:14px;margin-top:8px;">每一张照片，都是时光定格下的温柔奇迹。</p>
+      
+      <!-- Tag Filter for 2D View -->
+      <div class="blog-tags-filter" id="gallery-2d-tags" style="margin-top:20px;"></div>
     </div>
     <div class="gallery-grid-2d" id="gallery-2d-grid"></div>
   </section>
@@ -93,6 +96,7 @@
     let allPhotos = [];
     let currentPhotoIdx = 0;
     let gallery3DController = null;
+    let active2DTag = '全部';
 
     const modal = document.getElementById('gallery-detail-modal');
     const modalImg = document.getElementById('modal-img');
@@ -147,22 +151,54 @@
       if (e.key === 'ArrowRight') document.getElementById('modal-next-btn').click();
     });
 
-    // Render 2D Grid
+    // Render 2D Grid with Tag filtering
     function render2DGrid(photos) {
       const grid = document.getElementById('gallery-2d-grid');
-      grid.innerHTML = '';
-      photos.forEach((photo, idx) => {
-        const card = document.createElement('div');
-        card.className = 'polaroid-card reveal';
-        card.innerHTML = `
-          <img class="polaroid-img" src="${photo.image}" alt="${photo.title}" loading="lazy">
-          <div class="polaroid-title">${photo.title}</div>
-          <div class="polaroid-desc">${photo.description || ''}</div>
-        `;
-        card.onclick = () => window.openPhotoModal(idx);
-        grid.appendChild(card);
-      });
-      import('./scroll-reveal.js').then(m => m.initScrollReveal());
+      const tagsContainer = document.getElementById('gallery-2d-tags');
+      if (!grid) return;
+
+      // Extract unique tags
+      const tagSet = new Set(['全部']);
+      photos.forEach(p => (p.tags || []).forEach(t => tagSet.add(t)));
+      
+      if (tagsContainer) {
+        tagsContainer.innerHTML = Array.from(tagSet).map(tag => `
+          <button class="tag-btn ${tag === active2DTag ? 'active' : ''}" data-tag="${tag}">${tag}</button>
+        `).join('');
+
+        tagsContainer.onclick = (e) => {
+          const btn = e.target.closest('.tag-btn');
+          if (!btn) return;
+          active2DTag = btn.dataset.tag;
+          tagsContainer.querySelectorAll('.tag-btn').forEach(b => b.classList.toggle('active', b.dataset.tag === active2DTag));
+          renderCards();
+        };
+      }
+
+      function renderCards() {
+        grid.innerHTML = '';
+        const filtered = photos.filter(p => active2DTag === '全部' || (p.tags && p.tags.includes(active2DTag)));
+        
+        filtered.forEach((photo) => {
+          const originalIdx = photos.indexOf(photo);
+          const card = document.createElement('div');
+          card.className = 'polaroid-card visible';
+          const tagsBadges = (photo.tags || []).map(t => `<span>#${t}</span>`).join('');
+          
+          card.innerHTML = `
+            <div class="polaroid-img-wrap">
+              <img class="polaroid-img" src="${photo.image}" alt="${photo.title}" loading="lazy" onerror="this.src='https://images.unsplash.com/photo-1523712999610-f77fbcfc3843?w=600&q=80'">
+            </div>
+            <div class="polaroid-title">${photo.title}</div>
+            <div class="polaroid-desc">${photo.description || ''}</div>
+            <div class="polaroid-tags">${tagsBadges}</div>
+          `;
+          card.onclick = () => window.openPhotoModal(originalIdx);
+          grid.appendChild(card);
+        });
+      }
+
+      renderCards();
     }
 
     // View Switcher (3D vs 2D)
@@ -186,6 +222,7 @@
       container3D.style.display = 'none';
       container2D.classList.add('active');
       hint3d.style.display = 'none';
+      render2DGrid(allPhotos);
       showKawaiiToast('已切换为 2D 拍立得画廊 📸', '🌸');
     };
 
@@ -200,10 +237,14 @@
       })
       .catch(() => {
         const fallback = [
-          { id:'1', title:'桜と共に', image:'https://images.unsplash.com/photo-1523712999610-f77fbcfc3843?w=400&q=80', description:'春风拂过，花瓣落在肩头。', color:'#fce4ec', tags:['桜','春'] },
-          { id:'2', title:'星の記憶', image:'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=400&q=80', description:'夜空中的星光，像是过去的记忆。', color:'#e8eaf6', tags:['星空','記憶'] },
-          { id:'3', title:'夢の彼方', image:'https://images.unsplash.com/photo-1465146344425-f00d5f5c8f07?w=400&q=80', description:'在梦的彼岸，有无限的可能。', color:'#f3e5f5', tags:['夢','彼方'] },
-          { id:'4', title:'虹色の街', image:'https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=400&q=80', description:'雨后的城市，彩虹横跨天际。', color:'#e0f7fa', tags:['虹','雨後'] },
+          { id:'1', title:'夜の輝き', image:'/images/gallery/photo_01.jpg', description:'霓虹灯的蓝光，在夜色中温柔流淌。', color:'#1a1a2e', tags:['夜', '霓虹'] },
+          { id:'2', title:'小熊眼镜', image:'/images/gallery/photo_02.jpg', description:'粉色发卷与可爱眼镜，青春最美的模样。', color:'#fce4ec', tags:['可愛い', '日常'] },
+          { id:'3', title:'LVの仮面', image:'/images/gallery/photo_03.jpg', description:'面膜之下，藏着最真实的美丽。', color:'#5d4037', tags:['护肤', '可愛い'] },
+          { id:'4', title:'白昼の夢', image:'/images/gallery/photo_04.jpg', description:'慵懒的午后，时光像棉被一样柔软。', color:'#263238', tags:['日常', '休日'] },
+          { id:'5', title:'古風の詩', image:'/images/gallery/photo_05.jpg', description:'金叶掩映，汉服裙裾拂过岁月的痕迹。', color:'#bf8d30', tags:['漢服', '古風'] },
+          { id:'6', title:'紫夜の静寂', image:'/images/gallery/photo_06.jpg', description:'深夜的紫色光晕，是最私密的温柔。', color:'#4a148c', tags:['夜', '静寂'] },
+          { id:'7', title:'ひげの少女', image:'/images/gallery/photo_07.jpg', description:'豹纹蝴蝶结与小胡子，俏皮又可爱。', color:'#e8eaf6', tags:['可愛い', '搞怪'] },
+          { id:'8', title:'桜の祈り', image:'/images/gallery/photo_08.jpg', description:'樱花树下，虔诚祈愿，愿岁月皆温柔。', color:'#fce4ec', tags:['桜', '漢服', '祈り'] }
         ];
         allPhotos = fallback;
         gallery3DController = initGallery('gallery-container', fallback);
