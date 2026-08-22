@@ -5,7 +5,7 @@ import * as THREE from 'three';
 
 export function initGallery(containerId, photos) {
   const container = document.getElementById(containerId);
-  if (!container || photos.length === 0) return;
+  if (!container || photos.length === 0) return { cleanup: () => {}, deselectCard: () => {} };
 
   const disposables = { geometries: [], materials: [], textures: [] };
 
@@ -14,7 +14,6 @@ export function initGallery(containerId, photos) {
 
   // Scene
   const scene = new THREE.Scene();
-  scene.background = new THREE.Color(0xfafafa);
 
   // Camera
   const camera = new THREE.PerspectiveCamera(60, w / h, 0.1, 100);
@@ -29,7 +28,7 @@ export function initGallery(containerId, photos) {
   container.appendChild(renderer.domElement);
 
   // Lights
-  const ambientLight = new THREE.AmbientLight(0xfff0f5, 1.5);
+  const ambientLight = new THREE.AmbientLight(0xfff0f5, 1.6);
   scene.add(ambientLight);
   const dirLight = new THREE.DirectionalLight(0xffffff, 1.2);
   dirLight.position.set(2, 5, 5);
@@ -63,7 +62,7 @@ export function initGallery(containerId, photos) {
   // Polaroid cards group
   const ringGroup = new THREE.Group();
   scene.add(ringGroup);
-  const radius = isMobile ? 3.5 : 4.5;
+  const radius = isMobile ? 3.6 : 4.6;
 
   const cards = [];
   const textureLoader = new THREE.TextureLoader();
@@ -73,7 +72,7 @@ export function initGallery(containerId, photos) {
 
     const cardGroup = new THREE.Group();
 
-    // White polaroid background
+    // White polaroid frame
     const cardW = 1.6, cardH = 2.0;
     const whiteGeo = new THREE.PlaneGeometry(cardW, cardH);
     const whiteMat = new THREE.MeshPhongMaterial({ color: 0xffffff, side: THREE.DoubleSide });
@@ -82,7 +81,7 @@ export function initGallery(containerId, photos) {
     whiteMesh.receiveShadow = true;
     cardGroup.add(whiteMesh);
 
-    // Photo area (top portion of polaroid)
+    // Photo area
     const photoH = cardW * 0.9;
     const photoGeo = new THREE.PlaneGeometry(cardW - 0.2, photoH);
     const photoMat = new THREE.MeshPhongMaterial({
@@ -190,7 +189,7 @@ export function initGallery(containerId, photos) {
   window.addEventListener('mousemove', onMouseMove);
 
   function onClick(e) {
-    if (isDragging || dragDistance > 5) return;
+    if (isDragging || dragDistance > 6) return;
     raycaster.setFromCamera(mouse, camera);
     const intersects = raycaster.intersectObjects(cards, true);
 
@@ -198,11 +197,7 @@ export function initGallery(containerId, photos) {
       let cardObj = intersects[0].object;
       while (cardObj && !cardObj.userData.photo) cardObj = cardObj.parent;
       if (cardObj && cardObj.userData.photo) {
-        if (selectedCard === cardObj) {
-          deselectCard();
-        } else {
-          selectCard(cardObj);
-        }
+        selectCard(cardObj);
       }
     } else if (selectedCard) {
       deselectCard();
@@ -213,35 +208,22 @@ export function initGallery(containerId, photos) {
   function selectCard(card) {
     selectedCard = card;
     autoRotate = false;
-    const detail = document.getElementById('gallery-detail');
-    if (detail) {
-      const p = card.userData.photo;
-      const img = detail.querySelector('img');
-      if (img) img.src = p.image || '';
-      const h3 = detail.querySelector('h3');
-      if (h3) h3.textContent = p.title || '';
-      const descP = detail.querySelector('p');
-      if (descP) descP.textContent = p.description || '';
-      detail.style.display = 'block';
+    
+    if (typeof window.openPhotoModal === 'function') {
+      window.openPhotoModal(card.userData.index);
     }
+
     const target = card.position.clone();
     ringGroup.localToWorld(target);
-    const camTarget = target.clone().multiplyScalar(1.3);
+    const camTarget = target.clone().multiplyScalar(1.25);
     gsap.to(camera.position, { x: camTarget.x, y: camTarget.y, z: camTarget.z, duration: 0.8, ease: 'power2.out' });
   }
 
   function deselectCard() {
     selectedCard = null;
-    const detail = document.getElementById('gallery-detail');
-    if (detail) detail.style.display = 'none';
     gsap.to(camera.position, { x: 0, y: 0.5, z: isMobile ? 8 : 7, duration: 0.8, ease: 'power2.out' });
     setTimeout(() => { if (!isDragging) autoRotate = true; }, 1000);
   }
-
-  function onKeyDown(e) {
-    if (e.key === 'Escape') deselectCard();
-  }
-  window.addEventListener('keydown', onKeyDown);
 
   renderer.domElement.style.cursor = 'grab';
 
@@ -264,7 +246,7 @@ export function initGallery(containerId, photos) {
     ringGroup.rotation.y = rotationY;
     ringGroup.rotation.x = rotationX;
 
-    // Hover scale (only raycast when mouse has moved)
+    // Hover scale (only raycast when mouse moved)
     let currentHovered = null;
     if (mouseDirty) {
       mouseDirty = false;
@@ -307,8 +289,8 @@ export function initGallery(containerId, photos) {
   }
   document.addEventListener('visibilitychange', onVisibilityChange);
 
-  // Cleanup
-  return () => {
+  // Cleanup handler
+  const cleanup = () => {
     cancelAnimationFrame(animId);
     renderer.domElement.removeEventListener('pointerdown', onPointerDown);
     window.removeEventListener('pointerup', onPointerUp);
@@ -317,7 +299,6 @@ export function initGallery(containerId, photos) {
     window.removeEventListener('resize', onResize);
     window.removeEventListener('mousemove', onMouseMove);
     renderer.domElement.removeEventListener('click', onClick);
-    window.removeEventListener('keydown', onKeyDown);
     document.removeEventListener('visibilitychange', onVisibilityChange);
     disposables.geometries.forEach(g => g.dispose());
     disposables.materials.forEach(m => m.dispose());
@@ -327,4 +308,6 @@ export function initGallery(containerId, photos) {
       container.removeChild(renderer.domElement);
     }
   };
+
+  return { cleanup, selectCard, deselectCard };
 }

@@ -1,16 +1,30 @@
+// js/collapse.js — 物理重力坍塌彩蛋 (Matter.js)
+
 export function initCollapseMode() {
+  // Only inject if not already injected
+  if (document.getElementById('collapse-egg-btn')) return;
+
   const btn = document.createElement('button');
-  btn.textContent = '千万别按 💀';
+  btn.id = 'collapse-egg-btn';
+  btn.textContent = '物理坍塌 💀';
+  btn.title = '触发重力坍塌物理特效';
   Object.assign(btn.style, {
-    position: 'fixed', bottom: '20px', left: '20px', zIndex: '9999',
-    background: '#d32f2f', color: 'white', border: 'none', borderRadius: '4px',
-    padding: '8px 12px', fontSize: '12px', cursor: 'pointer', fontFamily: 'var(--font-body)',
-    boxShadow: '0 4px 12px rgba(211, 47, 47, 0.4)'
+    position: 'fixed', bottom: '86px', left: '24px', zIndex: '998',
+    background: 'rgba(211, 47, 47, 0.85)', color: 'white', border: 'none', borderRadius: 'var(--radius-full)',
+    padding: '6px 14px', fontSize: '11px', fontWeight: 'bold', cursor: 'pointer', fontFamily: 'var(--font-body)',
+    boxShadow: '0 4px 12px rgba(211, 47, 47, 0.3)', backdropFilter: 'blur(8px)',
+    transition: 'all 0.3s var(--ease-bounce)', opacity: '0.6'
   });
+
+  btn.addEventListener('mouseenter', () => { btn.style.opacity = '1'; btn.style.transform = 'scale(1.08)'; });
+  btn.addEventListener('mouseleave', () => { btn.style.opacity = '0.6'; btn.style.transform = 'scale(1)'; });
+
   document.body.appendChild(btn);
 
   btn.addEventListener('click', () => {
     btn.remove();
+    if (window.showKawaiiToast) window.showKawaiiToast('⚠️ 空间重力紊乱中... 坍塌启动！', '💥');
+    
     if (!window.Matter) {
       const script = document.createElement('script');
       script.src = 'https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.19.0/matter.min.js';
@@ -46,13 +60,9 @@ export function initCollapseMode() {
     Render.canvas.style.top = '0';
     Render.canvas.style.left = '0';
     Render.canvas.style.zIndex = '9998';
-    Render.canvas.style.pointerEvents = 'none'; // Will handle mouse via original DOM or Matter Mouse
+    Render.canvas.style.pointerEvents = 'none';
 
-    // We will replace DOM elements with Matter bodies, or just draw rectangles
-    // To make it fun, we hide the actual DOM elements and spawn physical bodies with their screenshot or color.
-    // For simplicity without html2canvas, we'll spawn physical blocks of the same color/size as DOM cards and buttons.
-    
-    const elementsToCollapse = document.querySelectorAll('.blog-card, .about-card, .kawaii-card, .kawaii-btn, img');
+    const elementsToCollapse = document.querySelectorAll('.blog-card, .about-card, .kawaii-card, .kawaii-btn, .fortune-card, .polaroid-card, img');
     const bodies = [];
     
     elementsToCollapse.forEach(el => {
@@ -67,7 +77,7 @@ export function initCollapseMode() {
         { 
           render: {
             fillStyle: window.getComputedStyle(el).backgroundColor || '#f8bbd0',
-            strokeStyle: '#ff4081',
+            strokeStyle: '#ec407a',
             lineWidth: 2
           },
           restitution: 0.6,
@@ -75,17 +85,17 @@ export function initCollapseMode() {
         }
       );
       bodies.push(body);
-      el.style.visibility = 'hidden'; // Hide original
+      el.style.visibility = 'hidden';
     });
 
-    // Add boundaries
+    // Boundaries
     const ground = Bodies.rectangle(window.innerWidth/2, window.innerHeight + 50, window.innerWidth, 100, { isStatic: true });
     const wallLeft = Bodies.rectangle(-50, window.innerHeight/2, 100, window.innerHeight, { isStatic: true });
     const wallRight = Bodies.rectangle(window.innerWidth + 50, window.innerHeight/2, 100, window.innerHeight, { isStatic: true });
 
     Composite.add(engine.world, [...bodies, ground, wallLeft, wallRight]);
 
-    // Add mouse interaction
+    // Mouse interaction
     const mouse = Mouse.create(render.canvas);
     const mouseConstraint = MouseConstraint.create(engine, {
       mouse: mouse,
@@ -96,7 +106,6 @@ export function initCollapseMode() {
     });
     Composite.add(engine.world, mouseConstraint);
     
-    // Enable pointer events for interaction
     Render.canvas.style.pointerEvents = 'auto';
 
     Render.run(render);

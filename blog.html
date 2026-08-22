@@ -18,7 +18,7 @@
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌸</text></svg>">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500&family=Noto+Serif+SC:wght@200;300;400&family=Klee+One&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&family=Noto+Serif+SC:wght@200;300;400;600&family=Klee+One:wght@400;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/kawaii.css">
   <link rel="manifest" href="/manifest.json">
 </head>
@@ -28,19 +28,21 @@
 
   <nav class="kawaii-nav">
     <a href="/" class="nav-brand">🌸 Rainly</a>
-    <button class="hamburger" aria-label="菜单" onclick="this.nextElementSibling.classList.toggle('open')">☰</button>
     <div class="nav-links">
       <a href="/">首页</a>
       <a href="/gallery.html">画廊</a>
       <a href="/blog.html" class="active">博客</a>
       <a href="/about.html">关于</a>
     </div>
+    <div class="nav-right">
+      <button class="hamburger" aria-label="菜单" onclick="document.querySelector('.nav-links').classList.toggle('open')">☰</button>
+    </div>
   </nav>
 
   <main id="blog-content"></main>
 
   <footer class="kawaii-footer">
-    <p>© 2026 Rainly · 用 💝 构建</p>
+    <p>© 2026 Rainly · 用 💝 构建 · ✦ 愿生活如诗般温柔 ✦</p>
   </footer>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/12.0.0/marked.min.js"></script>

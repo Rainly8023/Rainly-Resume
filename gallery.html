@@ -4,23 +4,23 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>美少女画廊 · Rainly</title>
-  <meta name="description" content="Rainly 的美少女画廊 —— 3D 拍立得旋转木马展示">
+  <meta name="description" content="Rainly 的美少女画廊 —— 3D 拍立得旋转木马 & 2D 精美画廊展示">
   <meta name="theme-color" content="#fce4ec">
   <!-- Open Graph -->
   <meta property="og:title" content="美少女画廊 · Rainly">
-  <meta property="og:description" content="Rainly 的美少女画廊 —— 3D 拍立得旋转木马展示">
+  <meta property="og:description" content="Rainly 的美少女画廊 —— 3D 拍立得旋转木马 & 2D 精美画廊展示">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://carterthyia.cloud/gallery.html">
   <meta property="og:image" content="https://images.unsplash.com/photo-1523712999610-f77fbcfc3843?w=1200&q=80">
   <!-- Twitter Card -->
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="美少女画廊 · Rainly">
-  <meta name="twitter:description" content="Rainly 的美少女画廊 —— 3D 拍立得旋转木马展示">
+  <meta name="twitter:description" content="Rainly 的美少女画廊 —— 3D 拍立得旋转木马 & 2D 精美画廊展示">
   <meta name="twitter:image" content="https://images.unsplash.com/photo-1523712999610-f77fbcfc3843?w=1200&q=80">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌸</text></svg>">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500&family=Noto+Serif+SC:wght@200;300;400&family=Klee+One&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&family=Noto+Serif+SC:wght@200;300;400;600&family=Klee+One:wght@400;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/kawaii.css">
   <link rel="manifest" href="/manifest.json">
 </head>
@@ -30,24 +30,51 @@
 
   <nav class="kawaii-nav">
     <a href="/" class="nav-brand">🌸 Rainly</a>
-    <button class="hamburger" aria-label="菜单" onclick="this.nextElementSibling.classList.toggle('open')">☰</button>
     <div class="nav-links">
       <a href="/">首页</a>
       <a href="/gallery.html" class="active">画廊</a>
       <a href="/blog.html">博客</a>
       <a href="/about.html">关于</a>
     </div>
+    <div class="nav-right">
+      <button class="hamburger" aria-label="菜单" onclick="document.querySelector('.nav-links').classList.toggle('open')">☰</button>
+    </div>
   </nav>
 
+  <!-- View Mode Switcher Toolbar -->
+  <div class="gallery-toolbar">
+    <button class="view-btn active" id="btn-view-3d">🎠 3D 旋转木马</button>
+    <button class="view-btn" id="btn-view-2d">📸 2D 拍立得</button>
+  </div>
+
+  <!-- 3D Gallery View -->
   <main id="gallery-container"></main>
 
-  <div class="gallery-info">🖱 拖拽旋转 · 滚轮缩放 · 点击查看 · Esc 关闭</div>
+  <div class="gallery-info" id="gallery-3d-hint">🖱 拖拽旋转 · 滚轮缩放 · 点击卡片查看大图 · Esc 关闭</div>
 
-  <div class="gallery-detail" id="gallery-detail" role="dialog" aria-label="图片详情">
-    <img src="" alt="画廊图片详情">
-    <h3></h3>
-    <p></p>
-    <button class="kawaii-btn" onclick="window.dispatchEvent(new KeyboardEvent('keydown',{key:'Escape'}))" style="margin-top:16px">✕ 关闭</button>
+  <!-- 2D Polaroid Grid View -->
+  <section class="gallery-2d-container" id="gallery-2d-container">
+    <div class="blog-hero" style="padding-top:20px;padding-bottom:20px;">
+      <div class="ribbon">✦ 拍立得相簿 ✦</div>
+      <h2>Photo Collection</h2>
+      <p style="color:var(--text-light);font-size:14px;margin-top:8px;">每一张照片，都是时光定格下的温柔奇迹。</p>
+    </div>
+    <div class="gallery-grid-2d" id="gallery-2d-grid"></div>
+  </section>
+
+  <!-- Enhanced Lightbox Modal -->
+  <div class="gallery-detail-modal" id="gallery-detail-modal" role="dialog" aria-label="图片详情">
+    <div class="gallery-detail-box">
+      <button class="modal-close-btn" id="modal-close-btn" aria-label="关闭">✕</button>
+      <button class="modal-nav-btn prev" id="modal-prev-btn" aria-label="上一张">‹</button>
+      <button class="modal-nav-btn next" id="modal-next-btn" aria-label="下一张">›</button>
+      
+      <img src="" alt="画廊图片详情" id="modal-img">
+      <h3 id="modal-title"></h3>
+      <div id="modal-tags" style="display:flex;gap:6px;justify-content:center;margin-bottom:10px;"></div>
+      <p id="modal-desc"></p>
+      <button class="kawaii-btn sm" id="modal-close-btn2" style="margin-top:16px;">🌸 关闭预览</button>
+    </div>
   </div>
 
   <script type="importmap">
@@ -56,31 +83,132 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
 
   <script type="module">
-    import { initEffects } from './js/init.js';
+    import { initEffects, showKawaiiToast } from './js/init.js';
     import { initGallery } from './js/gallery-3d.js';
     import { initScratchCard } from './js/scratch-card.js';
 
     const cleanupFns = initEffects();
     initScratchCard();
 
+    let allPhotos = [];
+    let currentPhotoIdx = 0;
+    let gallery3DController = null;
+
+    const modal = document.getElementById('gallery-detail-modal');
+    const modalImg = document.getElementById('modal-img');
+    const modalTitle = document.getElementById('modal-title');
+    const modalDesc = document.getElementById('modal-desc');
+    const modalTags = document.getElementById('modal-tags');
+    const hint3d = document.getElementById('gallery-3d-hint');
+
+    // Open Modal function
+    window.openPhotoModal = function(index) {
+      if (index < 0 || index >= allPhotos.length) return;
+      currentPhotoIdx = index;
+      const photo = allPhotos[index];
+
+      modalImg.src = photo.image || '';
+      modalTitle.textContent = photo.title || '';
+      modalDesc.textContent = photo.description || '';
+      modalTags.innerHTML = (photo.tags || []).map(t => `<span style="font-size:11px;background:var(--sakura-light);color:var(--sakura-pink);padding:2px 10px;border-radius:10px;">#${t}</span>`).join('');
+      
+      modal.classList.add('show');
+    };
+
+    window.closePhotoModal = function() {
+      modal.classList.remove('show');
+      if (gallery3DController && gallery3DController.deselectCard) {
+        gallery3DController.deselectCard();
+      }
+    };
+
+    document.getElementById('modal-close-btn').onclick = window.closePhotoModal;
+    document.getElementById('modal-close-btn2').onclick = window.closePhotoModal;
+    modal.onclick = (e) => {
+      if (e.target === modal) window.closePhotoModal();
+    };
+
+    document.getElementById('modal-prev-btn').onclick = (e) => {
+      e.stopPropagation();
+      const prevIdx = (currentPhotoIdx - 1 + allPhotos.length) % allPhotos.length;
+      window.openPhotoModal(prevIdx);
+    };
+
+    document.getElementById('modal-next-btn').onclick = (e) => {
+      e.stopPropagation();
+      const nextIdx = (currentPhotoIdx + 1) % allPhotos.length;
+      window.openPhotoModal(nextIdx);
+    };
+
+    window.addEventListener('keydown', (e) => {
+      if (!modal.classList.contains('show')) return;
+      if (e.key === 'Escape') window.closePhotoModal();
+      if (e.key === 'ArrowLeft') document.getElementById('modal-prev-btn').click();
+      if (e.key === 'ArrowRight') document.getElementById('modal-next-btn').click();
+    });
+
+    // Render 2D Grid
+    function render2DGrid(photos) {
+      const grid = document.getElementById('gallery-2d-grid');
+      grid.innerHTML = '';
+      photos.forEach((photo, idx) => {
+        const card = document.createElement('div');
+        card.className = 'polaroid-card reveal';
+        card.innerHTML = `
+          <img class="polaroid-img" src="${photo.image}" alt="${photo.title}" loading="lazy">
+          <div class="polaroid-title">${photo.title}</div>
+          <div class="polaroid-desc">${photo.description || ''}</div>
+        `;
+        card.onclick = () => window.openPhotoModal(idx);
+        grid.appendChild(card);
+      });
+      import('./scroll-reveal.js').then(m => m.initScrollReveal());
+    }
+
+    // View Switcher (3D vs 2D)
+    const btn3D = document.getElementById('btn-view-3d');
+    const btn2D = document.getElementById('btn-view-2d');
+    const container3D = document.getElementById('gallery-container');
+    const container2D = document.getElementById('gallery-2d-container');
+
+    btn3D.onclick = () => {
+      btn3D.classList.add('active');
+      btn2D.classList.remove('active');
+      container3D.style.display = 'block';
+      container2D.classList.remove('active');
+      hint3d.style.display = 'block';
+      showKawaiiToast('已切换为 3D 旋转木马视角 🎠', '✨');
+    };
+
+    btn2D.onclick = () => {
+      btn2D.classList.add('active');
+      btn3D.classList.remove('active');
+      container3D.style.display = 'none';
+      container2D.classList.add('active');
+      hint3d.style.display = 'none';
+      showKawaiiToast('已切换为 2D 拍立得画廊 📸', '🌸');
+    };
+
     // Load gallery data
     fetch('/content/gallery.json')
       .then(r => r.json())
       .then(photos => {
-        cleanupFns.push(initGallery('gallery-container', photos));
+        allPhotos = photos;
+        gallery3DController = initGallery('gallery-container', photos);
+        cleanupFns.push(gallery3DController.cleanup);
+        render2DGrid(photos);
       })
       .catch(() => {
-        // Fallback demo data
-        cleanupFns.push(initGallery('gallery-container', [
-          { id:'1', title:'桜と共に', image:'https://images.unsplash.com/photo-1523712999610-f77fbcfc3843?w=400&q=80', description:'春风拂过，花瓣落在肩头。', color:'#fce4ec' },
-          { id:'2', title:'星の記憶', image:'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=400&q=80', description:'夜空中的星光，像是过去的记忆。', color:'#e8eaf6' },
-          { id:'3', title:'夢の彼方', image:'https://images.unsplash.com/photo-1465146344425-f00d5f5c8f07?w=400&q=80', description:'在梦的彼岸，有无限的可能。', color:'#f3e5f5' },
-          { id:'4', title:'虹色の街', image:'https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=400&q=80', description:'雨后的城市，彩虹横跨天际。', color:'#e0f7fa' },
-          { id:'5', title:'月の光', image:'https://images.unsplash.com/photo-1505144808419-1957a94ca61e?w=400&q=80', description:'月光洒落，温柔了整个世界。', color:'#fff9c4' },
-          { id:'6', title:'新たな出会い', image:'/images/gallery/IMG_0021.jpg', description:'每一次相遇，都是命运的馈赠。', color:'#fce4ec' },
-          { id:'7', title:'星空の下で', image:'/images/gallery/IMG_0022.jpg', description:'在星空下，许下我们的愿望。', color:'#e8eaf6' },
-          { id:'8', title:'花の約束', image:'/images/gallery/IMG_0023.jpg', description:'花开的季节，想起我们的约定。', color:'#f3e5f5' },
-        ]));
+        const fallback = [
+          { id:'1', title:'桜と共に', image:'https://images.unsplash.com/photo-1523712999610-f77fbcfc3843?w=400&q=80', description:'春风拂过，花瓣落在肩头。', color:'#fce4ec', tags:['桜','春'] },
+          { id:'2', title:'星の記憶', image:'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=400&q=80', description:'夜空中的星光，像是过去的记忆。', color:'#e8eaf6', tags:['星空','記憶'] },
+          { id:'3', title:'夢の彼方', image:'https://images.unsplash.com/photo-1465146344425-f00d5f5c8f07?w=400&q=80', description:'在梦的彼岸，有无限的可能。', color:'#f3e5f5', tags:['夢','彼方'] },
+          { id:'4', title:'虹色の街', image:'https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=400&q=80', description:'雨后的城市，彩虹横跨天际。', color:'#e0f7fa', tags:['虹','雨後'] },
+        ];
+        allPhotos = fallback;
+        gallery3DController = initGallery('gallery-container', fallback);
+        cleanupFns.push(gallery3DController.cleanup);
+        render2DGrid(fallback);
       });
   </script>
 </body>

@@ -1,9 +1,11 @@
-// js/blog-render.js — 博客 Markdown 渲染 + 列表/详情切换
+// js/blog-render.js — 博客 Markdown 渲染 + 实时搜索/标签过滤 + 互动功能
 /* global marked */
 
 const escapeHtml = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 
 let posts = [];
+let activeTag = '全部';
+let searchQuery = '';
 
 export async function loadPosts() {
   try {
@@ -61,46 +63,110 @@ export function renderBlogList(containerId) {
     return;
   }
 
-  const featured = posts[0];
-  const rest = posts.slice(1);
+  // Collect all unique tags
+  const tagsSet = new Set(['全部']);
+  posts.forEach(p => (p.tags || []).forEach(t => tagsSet.add(t)));
+  const allTags = Array.from(tagsSet);
+
+  const tagsHtml = allTags.map(tag => `
+    <button class="tag-btn ${tag === activeTag ? 'active' : ''}" data-tag="${escapeHtml(tag)}">${escapeHtml(tag)}</button>
+  `).join('');
 
   let html = `
     <div class="blog-hero">
-      <div class="ribbon">✦ 最新記事 ✦</div>
-      <h2>Rainly Blog</h2>
-      <div class="featured" onclick="window.location.hash='#/post/${escapeHtml(featured.slug)}'" style="cursor:pointer">
-        <img src="${escapeHtml(featured.image)}" alt="${escapeHtml(featured.title)}" loading="lazy">
-        <h3>${escapeHtml(featured.title)}</h3>
-        <p style="color:var(--text-light);font-size:13px;margin-top:6px">${escapeHtml(featured.date)} · ${(featured.tags||[]).map(escapeHtml).join(' / ')}</p>
-        <p style="color:var(--text-light);font-size:14px;margin-top:10px;line-height:1.8">${escapeHtml(featured.summary)}</p>
+      <div class="ribbon">✦ 随笔与日常 ✦</div>
+      <h2>Rainly's Journal</h2>
+      <p style="color:var(--text-light);font-size:14px;margin-top:6px;">记录日常微光、旅行风物与二次元的美好碎碎念</p>
+      
+      <!-- Search & Tags Filter -->
+      <div class="blog-toolbar">
+        <div class="blog-search-box">
+          <span class="search-icon">🔍</span>
+          <input type="text" class="blog-search-input" id="blog-search" placeholder="搜索文章标题、内容或标签..." value="${escapeHtml(searchQuery)}">
+        </div>
+        <div class="blog-tags-filter" id="blog-tags-bar">
+          ${tagsHtml}
+        </div>
       </div>
     </div>
-    <div class="ornament-divider">✦ もっと読む ✦</div>
     <div class="blog-grid" id="blog-grid"></div>
   `;
   container.innerHTML = html;
 
-  const grid = document.getElementById('blog-grid');
-  if (!grid) return;
+  // Filter posts logic
+  function filterAndRenderCards() {
+    const grid = document.getElementById('blog-grid');
+    if (!grid) return;
 
-  rest.forEach((post, i) => {
-    const card = document.createElement('div');
-    card.className = 'blog-card reveal';
-    card.style.animationDelay = (i * 0.1) + 's';
-    card.onclick = () => { window.location.hash = `#/post/${post.slug}`; };
-    card.innerHTML = `
-      <img class="card-img" src="${escapeHtml(post.image)}" alt="${escapeHtml(post.title)}" loading="lazy">
-      <div class="card-body">
-        <h3>${escapeHtml(post.title)}</h3>
-        <div class="meta">${escapeHtml(post.date)} · ${(post.tags||[]).map(escapeHtml).join(' / ')}</div>
-        <div class="summary">${escapeHtml(post.summary)}</div>
-      </div>
-    `;
-    grid.appendChild(card);
-  });
+    const filtered = posts.filter(post => {
+      const matchTag = activeTag === '全部' || (post.tags && post.tags.includes(activeTag));
+      const query = searchQuery.trim().toLowerCase();
+      const matchQuery = !query || 
+        post.title.toLowerCase().includes(query) || 
+        post.summary.toLowerCase().includes(query) ||
+        (post.tags && post.tags.some(t => t.toLowerCase().includes(query)));
+      return matchTag && matchQuery;
+    });
 
-  // Trigger scroll reveal
-  import('./scroll-reveal.js').then(m => m.initScrollReveal());
+    if (filtered.length === 0) {
+      grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:60px 20px;color:var(--text-muted);">🍃 没有找到相关文章呢，换个关键词试试吧~</div>';
+      return;
+    }
+
+    grid.innerHTML = '';
+    filtered.forEach((post, i) => {
+      const card = document.createElement('div');
+      card.className = 'blog-card reveal';
+      card.style.animationDelay = (i * 0.08) + 's';
+      card.onclick = () => { window.location.hash = `#/post/${post.slug}`; };
+      
+      const tagsBadges = (post.tags || []).map(t => `<span style="background:var(--sakura-light);color:var(--sakura-pink);padding:2px 8px;border-radius:10px;font-size:11px;">#${escapeHtml(t)}</span>`).join(' ');
+
+      card.innerHTML = `
+        <div class="card-img-wrap">
+          <img class="card-img" src="${escapeHtml(post.image)}" alt="${escapeHtml(post.title)}" loading="lazy">
+        </div>
+        <div class="card-body">
+          <div class="meta">
+            <span>📅 ${escapeHtml(post.date)}</span>
+            <span>·</span>
+            <span>${tagsBadges}</span>
+          </div>
+          <h3>${escapeHtml(post.title)}</h3>
+          <div class="summary">${escapeHtml(post.summary)}</div>
+          <div style="font-size:13px;color:var(--sakura-pink);font-weight:600;display:flex;align-items:center;gap:4px;">
+            阅读全文 →
+          </div>
+        </div>
+      `;
+      grid.appendChild(card);
+    });
+
+    import('./scroll-reveal.js').then(m => m.initScrollReveal());
+  }
+
+  filterAndRenderCards();
+
+  // Search event
+  const searchInput = document.getElementById('blog-search');
+  if (searchInput) {
+    searchInput.addEventListener('input', (e) => {
+      searchQuery = e.target.value;
+      filterAndRenderCards();
+    });
+  }
+
+  // Tag filter events
+  const tagsBar = document.getElementById('blog-tags-bar');
+  if (tagsBar) {
+    tagsBar.addEventListener('click', (e) => {
+      const btn = e.target.closest('.tag-btn');
+      if (!btn) return;
+      activeTag = btn.dataset.tag;
+      tagsBar.querySelectorAll('.tag-btn').forEach(b => b.classList.toggle('active', b.dataset.tag === activeTag));
+      filterAndRenderCards();
+    });
+  }
 }
 
 export async function renderBlogDetail(containerId, slug) {
@@ -109,42 +175,89 @@ export async function renderBlogDetail(containerId, slug) {
 
   const post = posts.find(p => p.slug === slug);
   if (!post) {
-    container.innerHTML = '<div class="blog-detail"><h1>文章不存在 😿</h1><a href="/blog.html" class="kawaii-btn">← 返回博客</a></div>';
+    container.innerHTML = '<div class="blog-detail" style="text-align:center;"><h1>文章不存在 😿</h1><p style="margin:20px 0;color:var(--text-light);">可能已经被移动或删除</p><a href="/blog.html" class="kawaii-btn">← 返回博客列表</a></div>';
     return;
   }
 
-  // Load full markdown content
   let bodyHtml = `<p>${post.summary}</p>`;
+  let wordCount = post.summary.length;
+
   try {
     const res = await fetch(`/content/posts/${slug}.md`);
     if (res.ok) {
       const md = await res.text();
       const content = md.replace(/^---[\s\S]*?---\n?/, '').trim();
+      wordCount = content.length;
       if (typeof marked !== 'undefined' && marked.parse) {
         bodyHtml = marked.parse(content);
       }
     }
   } catch { /* use summary fallback */ }
 
+  const readingTime = Math.max(1, Math.ceil(wordCount / 350));
+  const postLikeKey = `rainly-post-likes-${slug}`;
+  let likeCount = parseInt(localStorage.getItem(postLikeKey) || '12', 10);
+
   document.title = `${post.title} · Rainly Blog`;
+
+  const tagsBadges = (post.tags || []).map(t => `<span style="background:var(--sakura-light);color:var(--sakura-pink);padding:3px 10px;border-radius:12px;font-size:12px;">#${escapeHtml(t)}</span>`).join(' ');
 
   container.innerHTML = `
     <div class="blog-detail reveal">
       ${post.image ? `<img class="cover" src="${escapeHtml(post.image)}" alt="${escapeHtml(post.title)}">` : ''}
       <h1>${escapeHtml(post.title)}</h1>
-      <div class="date">${escapeHtml(post.date)} · ${(post.tags||[]).map(escapeHtml).join(' / ')}</div>
+      <div class="detail-meta">
+        <span>📅 发布于 ${escapeHtml(post.date)}</span>
+        <span>⏱️ 约 ${readingTime} 分钟阅读 (${wordCount} 字)</span>
+        <div>${tagsBadges}</div>
+      </div>
       <div class="content">${bodyHtml}</div>
+      
+      <!-- Interactive Action Bar -->
+      <div class="blog-actions-bar">
+        <button class="like-btn" id="post-like-btn">💖 点赞支持 (<span id="post-like-count">${likeCount}</span>)</button>
+        <button class="kawaii-btn sm purple" id="post-share-btn">🔗 分享文章</button>
+      </div>
+
       <div style="margin-top:40px;text-align:center">
-        <a href="/blog.html" class="kawaii-btn purple">← 返回列表</a>
+        <a href="/blog.html" class="kawaii-btn purple">← 返回文章列表</a>
       </div>
     </div>
     <div class="progress-bar" id="progress-bar"></div>
   `;
 
+  // Like button logic
+  const likeBtn = document.getElementById('post-like-btn');
+  const likeCountSpan = document.getElementById('post-like-count');
+  let hasLiked = false;
+
+  likeBtn.addEventListener('click', () => {
+    if (!hasLiked) {
+      likeCount++;
+      hasLiked = true;
+      localStorage.setItem(postLikeKey, likeCount);
+      likeCountSpan.textContent = likeCount;
+      likeBtn.style.background = '#ff4081';
+      likeBtn.style.color = '#fff';
+      if (window.showKawaiiToast) window.showKawaiiToast('谢谢你的支持与喜欢！💖', '🌸');
+    } else {
+      if (window.showKawaiiToast) window.showKawaiiToast('你已经为这篇文章点过赞啦 ✨', '💝');
+    }
+  });
+
+  // Share button logic
+  const shareBtn = document.getElementById('post-share-btn');
+  shareBtn.addEventListener('click', () => {
+    navigator.clipboard.writeText(window.location.href).then(() => {
+      if (window.showKawaiiToast) window.showKawaiiToast('文章链接已复制到剪贴板 📋', '✨');
+    }).catch(() => {
+      if (window.showKawaiiToast) window.showKawaiiToast('分享链接：' + window.location.href, '🔗');
+    });
+  });
+
   // Reading progress bar
   const progressBar = document.getElementById('progress-bar');
   if (progressBar) {
-    // Remove any previously attached scroll handler to prevent leaks
     if (window._blogScrollHandler) {
       window.removeEventListener('scroll', window._blogScrollHandler);
     }

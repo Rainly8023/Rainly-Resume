@@ -18,7 +18,7 @@
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌸</text></svg>">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500&family=Noto+Serif+SC:wght@200;300;400&family=Klee+One&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&family=Noto+Serif+SC:wght@200;300;400;600&family=Klee+One:wght@400;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/kawaii.css">
   <link rel="manifest" href="/manifest.json">
 </head>
@@ -28,36 +28,69 @@
 
   <nav class="kawaii-nav">
     <a href="/" class="nav-brand">🌸 Rainly</a>
-    <button class="hamburger" aria-label="菜单" onclick="this.nextElementSibling.classList.toggle('open')">☰</button>
     <div class="nav-links">
       <a href="/">首页</a>
       <a href="/gallery.html">画廊</a>
       <a href="/blog.html">博客</a>
       <a href="/about.html" class="active">关于</a>
     </div>
+    <div class="nav-right">
+      <button class="hamburger" aria-label="菜单" onclick="document.querySelector('.nav-links').classList.toggle('open')">☰</button>
+    </div>
   </nav>
 
   <main class="about-container">
     <section class="about-card reveal">
-      <img class="avatar" src="/images/uploads/12.JPG" alt="Rainly 的头像" id="profile-avatar" loading="lazy">
+      <img class="avatar" src="/images/uploads/12.JPG" alt="Rainly 的头像" id="profile-avatar" loading="lazy" onerror="this.src='https://images.unsplash.com/photo-1578632767115-351597cf2477?w=300&q=80'">
       <h3 id="profile-name">Rainly</h3>
+      
       <div class="tags" id="profile-tags">
-        <span>🌸 二次元</span><span>💻 程序员</span><span>✈️ 旅行</span>
+        <span>🌸 二次元</span>
+        <span>💻 程序员</span>
+        <span>✈️ 自由旅行</span>
+        <span>📸 光影记录</span>
+        <span>🎮 游戏玩家</span>
       </div>
-      <p class="bio" id="profile-bio">用脚步重新认识自己住的这个世界。<br>喜欢拍照、写代码、看动漫。</p>
-      <div class="social-links">
-        <a href="https://github.com/Rainly8023" target="_blank" rel="noopener noreferrer" class="kawaii-btn purple" style="padding:8px 20px;font-size:12px">🐙 GitHub</a>
-        <a href="mailto:hi@carterthyia.cloud" class="kawaii-btn" style="padding:8px 20px;font-size:12px">💌 Email</a>
+
+      <p class="bio" id="profile-bio">用脚步重新认识自己住的这个世界。<br>喜欢拍照、写代码、看动漫与收集一切美好。</p>
+
+      <div class="social-links" style="margin-top:20px;">
+        <a href="https://github.com/Rainly8023" target="_blank" rel="noopener noreferrer" class="kawaii-btn purple sm" id="btn-github">🐙 GitHub 空间</a>
+        <button class="kawaii-btn sm" id="btn-email-copy">💌 复制邮箱</button>
       </div>
     </section>
+
+    <!-- Skills & Interests Radar Section -->
+    <div class="about-stats-grid reveal" style="animation-delay: 0.15s;">
+      <div class="stat-box">
+        <h4>🌸 萌系审美</h4>
+        <div class="stat-val">99%</div>
+        <p style="font-size:11px;color:var(--text-muted);margin-top:4px;">二次元 / 视觉设计</p>
+      </div>
+      <div class="stat-box">
+        <h4>💻 代码创作</h4>
+        <div class="stat-val">92%</div>
+        <p style="font-size:11px;color:var(--text-muted);margin-top:4px;">前端 / 全栈探索</p>
+      </div>
+      <div class="stat-box">
+        <h4>📸 光影定格</h4>
+        <div class="stat-val">88%</div>
+        <p style="font-size:11px;color:var(--text-muted);margin-top:4px;">风景 / 胶片人像</p>
+      </div>
+      <div class="stat-box">
+        <h4>✈️ 探索旅程</h4>
+        <div class="stat-val">100%</div>
+        <p style="font-size:11px;color:var(--text-muted);margin-top:4px;">行万里路 / 寻味世界</p>
+      </div>
+    </div>
   </main>
 
   <footer class="kawaii-footer">
-    <p>© 2026 Rainly · 用 💝 构建</p>
+    <p>© 2026 Rainly · 用 💝 构建 · ✦ 愿所有美好如期而至 ✦</p>
   </footer>
 
   <script type="module">
-    import { initEffects } from './js/init.js';
+    import { initEffects, showKawaiiToast } from './js/init.js';
     import { initScrollReveal } from './js/scroll-reveal.js';
     import { typeText } from './js/typewriter.js';
 
@@ -65,8 +98,10 @@
     initScrollReveal();
 
     const bioEl = document.getElementById('profile-bio');
-    const defaultBio = bioEl.innerHTML;
+    const defaultBio = "用脚步重新认识自己住的这个世界。<br>喜欢拍照、写代码、看动漫与收集一切美好。";
     bioEl.innerHTML = ''; // Clear immediately before typing starts
+
+    let contactEmail = "hi@carterthyia.cloud";
 
     // Load profile from CMS data (XSS-safe: using textContent)
     fetch('/content/settings/profile.json')
@@ -74,6 +109,7 @@
       .then(data => {
         if (data.nickname) document.getElementById('profile-name').textContent = data.nickname;
         if (data.avatar) document.getElementById('profile-avatar').src = data.avatar;
+        if (data.social && data.social.email) contactEmail = data.social.email;
         
         const finalBio = data.bio ? data.bio : defaultBio;
         typeText(bioEl, finalBio);
@@ -81,6 +117,15 @@
       .catch(() => {
         typeText(bioEl, defaultBio);
       });
+
+    // Copy Email button
+    document.getElementById('btn-email-copy').addEventListener('click', () => {
+      navigator.clipboard.writeText(contactEmail).then(() => {
+        showKawaiiToast(`已复制邮箱：${contactEmail} 💌`, '✨');
+      }).catch(() => {
+        showKawaiiToast(`联系邮箱：${contactEmail}`, '💌');
+      });
+    });
   </script>
 </body>
 </html>

@@ -1,37 +1,46 @@
+// js/kawaii-player.js — 二次元黑胶唱片浮动音乐播放器
+
 export function initMusicPlayer() {
+  if (document.getElementById('kawaii-player')) return;
+
   const playerHTML = `
-    <div id="kawaii-player" style="position: fixed; bottom: 20px; right: 20px; z-index: 1000; background: var(--card-bg); backdrop-filter: blur(10px); border: 2px solid var(--sakura-pink); border-radius: 30px; padding: 10px 15px; display: flex; align-items: center; gap: 10px; box-shadow: var(--shadow-card); cursor: pointer; transition: transform 0.3s var(--ease-bounce);">
-      <div id="kp-icon" style="font-size: 24px; animation: spin 4s linear infinite; animation-play-state: paused;">💿</div>
-      <div id="kp-info" style="display: flex; flex-direction: column;">
-        <span style="font-family: var(--font-hand); font-size: 14px; color: var(--sakura-pink); font-weight: bold; line-height: 1.2;">恶作剧</span>
-        <span style="font-size: 10px; color: var(--text-light);">点击播放 🎵</span>
+    <div id="kawaii-player" title="点击播放 / 暂停音乐">
+      <div class="vinyl-disc" id="kp-vinyl">
+        <div class="vinyl-core"></div>
       </div>
-      <audio id="kp-audio" loop src="/content/ezuoju.mp3"></audio>
+      <div class="player-info-wrap" id="kp-info">
+        <span class="player-title">恶作剧</span>
+        <span class="player-subtitle" id="kp-status">点击播放 🎵</span>
+      </div>
+      <audio id="kp-audio" loop preload="none" src="/content/ezuoju.mp3"></audio>
     </div>
-    <style>
-      @keyframes spin { 100% { transform: rotate(360deg); } }
-      #kawaii-player:hover { transform: scale(1.05) translateY(-5px); }
-    </style>
   `;
 
   document.body.insertAdjacentHTML('beforeend', playerHTML);
 
   const player = document.getElementById('kawaii-player');
   const audio = document.getElementById('kp-audio');
-  const icon = document.getElementById('kp-icon');
-  const info = player.querySelector('#kp-info span:last-child');
-  
+  const vinyl = document.getElementById('kp-vinyl');
+  const statusEl = document.getElementById('kp-status');
+
   let isPlaying = false;
 
-  player.addEventListener('click', () => {
+  player.addEventListener('click', (e) => {
+    e.stopPropagation();
     if (isPlaying) {
       audio.pause();
-      icon.style.animationPlayState = 'paused';
-      info.textContent = '已暂停';
+      vinyl.style.animationPlayState = 'paused';
+      statusEl.textContent = '已暂停 ⏸️';
+      if (window.showKawaiiToast) window.showKawaiiToast('音乐已暂停', '💿');
     } else {
-      audio.play().catch(e => console.log('Audio play blocked', e));
-      icon.style.animationPlayState = 'running';
-      info.textContent = '正在播放 🎵';
+      audio.play().then(() => {
+        vinyl.style.animationPlayState = 'running';
+        statusEl.textContent = '正在播放 🎵';
+        if (window.showKawaiiToast) window.showKawaiiToast('正在播放：恶作剧 🎵', '🎶');
+      }).catch(err => {
+        console.log('Audio autoplay blocked or failed', err);
+        if (window.showKawaiiToast) window.showKawaiiToast('请再次点击以允许播放音乐 🎵', '🎧');
+      });
     }
     isPlaying = !isPlaying;
   });
