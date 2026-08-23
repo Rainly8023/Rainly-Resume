@@ -4,17 +4,17 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>关于我 · Rainly</title>
-  <meta name="description" content="关于 Rainly —— 一个喜欢拍照、写代码、看动漫的旅行者">
+  <meta name="description" content="关于 Rainly —— 一个喜欢拍照、写代码、看动漫的旅行者与二次元全栈探索者">
   <meta name="theme-color" content="#fce4ec">
   <!-- Open Graph -->
   <meta property="og:title" content="关于我 · Rainly">
-  <meta property="og:description" content="关于 Rainly —— 一个喜欢拍照、写代码、看动漫的旅行者">
+  <meta property="og:description" content="关于 Rainly —— 一个喜欢拍照、写代码、看动漫的旅行者与二次元全栈探索者">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://carterthyia.cloud/about.html">
   <!-- Twitter Card -->
   <meta name="twitter:card" content="summary">
   <meta name="twitter:title" content="关于我 · Rainly">
-  <meta name="twitter:description" content="关于 Rainly —— 一个喜欢拍照、写代码、看动漫的旅行者">
+  <meta name="twitter:description" content="关于 Rainly —— 一个喜欢拍照、写代码、看动漫的旅行者与二次元全栈探索者">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌸</text></svg>">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -39,50 +39,172 @@
     </div>
   </nav>
 
-  <main class="about-container">
-    <section class="about-card reveal">
-      <img class="avatar" src="/images/uploads/12.JPG" alt="Rainly 的头像" id="profile-avatar" loading="lazy" onerror="this.src='https://images.unsplash.com/photo-1578632767115-351597cf2477?w=300&q=80'">
-      <h3 id="profile-name">Rainly</h3>
-      
-      <div class="tags" id="profile-tags">
-        <span>🌸 二次元</span>
-        <span>💻 程序员</span>
-        <span>✈️ 自由旅行</span>
-        <span>📸 光影记录</span>
-        <span>🎮 游戏玩家</span>
+  <main class="about-wrapper">
+    
+    <!-- 1. Master Character Card -->
+    <section class="about-hero-card reveal">
+      <div class="about-avatar-col">
+        <div class="about-avatar-ring">
+          <img src="/images/uploads/12.JPG" alt="Rainly" id="profile-avatar" onerror="this.src='https://images.unsplash.com/photo-1578632767115-351597cf2477?w=300&q=80'">
+        </div>
+        <div class="about-level-tag">✨ LV.99 幻想旅者</div>
+        <div style="font-size: 11.5px; color: var(--mint-green); font-weight: bold; margin-top: 8px; display: flex; align-items: center; gap: 5px;">
+          <span style="width:7px;height:7px;background:#00e676;border-radius:50%;display:inline-block;box-shadow:0 0 6px #00e676;"></span>
+          代码创作 & 追番中
+        </div>
       </div>
 
-      <p class="bio" id="profile-bio">用脚步重新认识自己住的这个世界。<br>喜欢拍照、写代码、看动漫与收集一切美好。</p>
+      <div class="about-content-col">
+        <h2 id="profile-name">Rainly</h2>
+        <div class="about-title-tag">
+          <span>✦ 星と花の旅人</span>
+          <span>·</span>
+          <span>ACG Fullstack Explorer</span>
+        </div>
 
-      <div class="social-links" style="margin-top:20px;">
-        <a href="https://github.com/Rainly8023" target="_blank" rel="noopener noreferrer" class="kawaii-btn purple sm" id="btn-github">🐙 GitHub 空间</a>
-        <button class="kawaii-btn sm" id="btn-email-copy">💌 复制邮箱</button>
+        <div class="about-bio-box">
+          <p id="profile-bio">用脚步重新认识自己住的这个世界。<br>喜欢拍照、写代码、看动漫，收集世间一切闪闪发光的温柔。</p>
+        </div>
+
+        <div class="about-tags-cloud" id="profile-tags">
+          <span class="about-tag-pill">🌸 ACG 深度沉迷</span>
+          <span class="about-tag-pill">💻 全栈工匠</span>
+          <span class="about-tag-pill">✈️ 自由旅人</span>
+          <span class="about-tag-pill">📸 光影定格</span>
+          <span class="about-tag-pill">🎮 RPG/音游玩家</span>
+          <span class="about-tag-pill">☕ 慢调生活</span>
+        </div>
+
+        <div class="about-actions">
+          <a href="https://github.com/Rainly8023" target="_blank" rel="noopener noreferrer" class="kawaii-btn purple sm" id="btn-github">🐙 GitHub 空间</a>
+          <button class="kawaii-btn sm" id="btn-email-copy">💌 复制邮箱</button>
+          <a href="/gallery.html" class="kawaii-btn sm">🌸 探索画廊</a>
+        </div>
       </div>
     </section>
 
-    <!-- Skills & Interests Radar Section -->
-    <div class="about-stats-grid reveal" style="animation-delay: 0.15s;">
-      <div class="stat-box">
-        <h4>🌸 萌系审美</h4>
-        <div class="stat-val">99%</div>
-        <p style="font-size:11px;color:var(--text-muted);margin-top:4px;">二次元 / 视觉设计</p>
+    <!-- 2. RPG Stats & Specialties Skill Tree -->
+    <section class="reveal" style="animation-delay: 0.1s;">
+      <div class="about-section-header">
+        <div class="ribbon">✦ 专项能力雷达 ✦</div>
+        <h3>Specialties & Skills</h3>
+        <p>将热爱与专注化为技能点，构筑独一无二的数字次元</p>
       </div>
-      <div class="stat-box">
-        <h4>💻 代码创作</h4>
-        <div class="stat-val">92%</div>
-        <p style="font-size:11px;color:var(--text-muted);margin-top:4px;">前端 / 全栈探索</p>
+
+      <div class="stats-pro-grid">
+        <div class="stat-card-pro">
+          <div class="stat-pro-top">
+            <div class="stat-pro-title">🌸 视觉审美 & 萌系 UI</div>
+            <div class="stat-pro-pct">98%</div>
+          </div>
+          <div class="skill-bar-track">
+            <div class="skill-bar-fill" style="width: 98%;"></div>
+          </div>
+          <div class="stat-pro-desc">深谙二次元色彩哲学与毛玻璃光影质感，追求每一个像素与动效的精致温柔。</div>
+        </div>
+
+        <div class="stat-card-pro">
+          <div class="stat-pro-top">
+            <div class="stat-pro-title">💻 现代前端 & WebGL 探索</div>
+            <div class="stat-pro-pct">93%</div>
+          </div>
+          <div class="skill-bar-track">
+            <div class="skill-bar-fill" style="width: 93%;"></div>
+          </div>
+          <div class="stat-pro-desc">精通 ES6+、Three.js 3D 交互、PWA 离线技术与极致响应式体验架构。</div>
+        </div>
+
+        <div class="stat-card-pro">
+          <div class="stat-pro-top">
+            <div class="stat-pro-title">📸 光影定格 & 胶片调色</div>
+            <div class="stat-pro-pct">89%</div>
+          </div>
+          <div class="skill-bar-track">
+            <div class="skill-bar-fill" style="width: 89%;"></div>
+          </div>
+          <div class="stat-pro-desc">捕捉落樱缤纷、夏夜花火与城市的微光，用镜头给时光加上温暖的滤镜。</div>
+        </div>
+
+        <div class="stat-card-pro">
+          <div class="stat-pro-top">
+            <div class="stat-pro-title">✈️ 世界漫游 & 探索精神</div>
+            <div class="stat-pro-pct">100%</div>
+          </div>
+          <div class="skill-bar-track">
+            <div class="skill-bar-fill" style="width: 100%;"></div>
+          </div>
+          <div class="stat-pro-desc">用脚步丈量大地，从山川到海岸，在旅途的风里汲取无尽的自由与灵感。</div>
+        </div>
       </div>
-      <div class="stat-box">
-        <h4>📸 光影定格</h4>
-        <div class="stat-val">88%</div>
-        <p style="font-size:11px;color:var(--text-muted);margin-top:4px;">风景 / 胶片人像</p>
+    </section>
+
+    <!-- 3. Milestones Timeline -->
+    <section class="reveal" style="animation-delay: 0.15s;">
+      <div class="about-section-header">
+        <div class="ribbon">✦ 探索足迹 ✦</div>
+        <h3>Adventure Milestones</h3>
+        <p>时光在星河里留下的每一个脚印</p>
       </div>
-      <div class="stat-box">
-        <h4>✈️ 探索旅程</h4>
-        <div class="stat-val">100%</div>
-        <p style="font-size:11px;color:var(--text-muted);margin-top:4px;">行万里路 / 寻味世界</p>
+
+      <div class="timeline-list">
+        <div class="timeline-node">
+          <div class="timeline-dot"></div>
+          <div class="timeline-year">2026 · PRESENT</div>
+          <div class="timeline-title">🌸 数字幻想乡「Rainly」诞生</div>
+          <div class="timeline-text">构建基于 Three.js 的 3D 沉浸式旋转木马画廊、随笔博客与萌系交互小世界，开启全新的创作空间。</div>
+        </div>
+
+        <div class="timeline-node">
+          <div class="timeline-dot"></div>
+          <div class="timeline-year">2025 · EXPLORATION</div>
+          <div class="timeline-title">📸 樱花祭与夏夜花火巡礼</div>
+          <div class="timeline-text">漫步在春日粉色花海与夏夜烟花之下，拍下上千张胶片写真，记录生活与旅行中最纯粹的感动。</div>
+        </div>
+
+        <div class="timeline-node">
+          <div class="timeline-dot"></div>
+          <div class="timeline-year">2024 · GENESIS</div>
+          <div class="timeline-title">💻 代码与全栈技术的深度探索</div>
+          <div class="timeline-text">深入现代前端体系与图形渲染，参与开源项目，致力于将二次元浪漫融入代码创作之中。</div>
+        </div>
       </div>
-    </div>
+    </section>
+
+    <!-- 4. Favorites & Arsenal -->
+    <section class="reveal" style="animation-delay: 0.2s;">
+      <div class="about-section-header">
+        <div class="ribbon">✦ 喜好与装备 ✦</div>
+        <h3>Favorites & Gear</h3>
+        <p>构建日常精神世界的小小元素</p>
+      </div>
+
+      <div class="favorites-grid">
+        <div class="fav-card">
+          <div class="fav-icon">🎬</div>
+          <h4>精神食粮</h4>
+          <p>《言叶之庭》《夏目友人帐》《CLANNAD》《紫罗兰永恒花园》</p>
+        </div>
+
+        <div class="fav-card">
+          <div class="fav-icon">🎧</div>
+          <h4>音律空间</h4>
+          <p>J-Pop 流行乐、VOCALOID、治愈系 Lo-Fi 与经典 ACG 动画原声带</p>
+        </div>
+
+        <div class="fav-card">
+          <div class="fav-icon">💻</div>
+          <h4>数字工坊</h4>
+          <p>MacBook Pro, 胶片相机, 机械键盘, 4K 专业广色域显示器</p>
+        </div>
+
+        <div class="fav-card">
+          <div class="fav-icon">☕</div>
+          <h4>日常补给</h4>
+          <p>特调抹茶生椰拿铁, 栗子蒙布朗, 樱花煎茶, 甜美可丽饼</p>
+        </div>
+      </div>
+    </section>
+
   </main>
 
   <footer class="kawaii-footer">
@@ -98,12 +220,12 @@
     initScrollReveal();
 
     const bioEl = document.getElementById('profile-bio');
-    const defaultBio = "用脚步重新认识自己住的这个世界。<br>喜欢拍照、写代码、看动漫与收集一切美好。";
+    const defaultBio = "用脚步重新认识自己住的这个世界。<br>喜欢拍照、写代码、看动漫，收集世间一切闪闪发光的温柔。";
     bioEl.innerHTML = ''; // Clear immediately before typing starts
 
     let contactEmail = "hi@carterthyia.cloud";
 
-    // Load profile from CMS data (XSS-safe: using textContent)
+    // Load profile from CMS data
     fetch('/content/settings/profile.json')
       .then(r => r.json())
       .then(data => {
@@ -118,10 +240,10 @@
         typeText(bioEl, defaultBio);
       });
 
-    // Copy Email button
+    // Copy Email button with toast
     document.getElementById('btn-email-copy').addEventListener('click', () => {
       navigator.clipboard.writeText(contactEmail).then(() => {
-        showKawaiiToast(`已复制邮箱：${contactEmail} 💌`, '✨');
+        showKawaiiToast(`已复制联系邮箱：${contactEmail} 💌`, '✨');
       }).catch(() => {
         showKawaiiToast(`联系邮箱：${contactEmail}`, '💌');
       });
